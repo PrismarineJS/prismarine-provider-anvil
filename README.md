@@ -13,3 +13,5 @@ npm install -g gulp mocha && npm install
 gulp
 mocha
 ```
+
+<span style="font-size: 8px;">For more badges, checkout out http://www.shields.io</span>
