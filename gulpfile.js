@@ -3,7 +3,7 @@ var babel = require('gulp-babel');
 
 gulp.task('transpile', function() {
     gulp.src('src/*.js')
-        .pipe(babel())
+        .pipe(babel({ experimental: true }))
         .pipe(gulp.dest('dist/'));
 });
 

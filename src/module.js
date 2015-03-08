@@ -58,7 +58,8 @@ class Anvil {
 
     }
 }
+
 module.exports = Anvil;
 
-var chunk = new module.exports;
+var chunk = new Anvil;
 chunk.load(0,-32);
