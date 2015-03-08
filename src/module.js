@@ -2,7 +2,7 @@ var readMCA = require('minecraft-mca');
 var mcRegion = require('minecraft-region');
 var fs = require('fs');
 
-async getRegion(x, z) {
+async function getRegion(x, z) {
     var region = { x: x >> 5, z: z >> 5 };
     var regionFile = 'world/lttp/r.'+region.x+'.'+region.z+'.mca';
     var buf = fs.readFileSync(regionFile);  
@@ -10,7 +10,7 @@ async getRegion(x, z) {
     return data;
 }
 
-async getChunk(region, x, z) {
+async function getChunk(region, x, z) {
     var regions = {};
     var types = {};
     var opts = {
@@ -31,7 +31,7 @@ async getChunk(region, x, z) {
     return { regions: regions, types: types };
 }
 
-async toArrayBuffer(buffer) {
+async function toArrayBuffer(buffer) {
     var ab = new ArrayBuffer(buffer.length);
     var typedarray = new Uint8Array(ab);
     for (var i = 0; i < buffer.length; ++i) {
