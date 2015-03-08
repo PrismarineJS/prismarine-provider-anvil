@@ -49,7 +49,7 @@ class Anvil {
             throw "Missing x or z arguments."
         }
         var region = await getRegion(x,z);
-        var chunk = await getChunk(region,x,z));
+        var chunk = await getChunk(region,x,z);
         return chunk
     }
 
