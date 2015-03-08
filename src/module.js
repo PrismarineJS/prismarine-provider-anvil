@@ -2,37 +2,17 @@ var readMCA = require('minecraft-mca');
 var mcRegion = require('minecraft-region');
 var fs = require('fs');
 
-module.exports = function anvil() {
-
-	// returns a Promise. Resolve a Chunk object or reject if it hasn’t been generated
-	this.load = function(x,z) {
-		console.log("Loading Chunk at ", x,z);
-		if ((!x || !z) && (x !=0 && z !=0)) {
-			throw "Missing x or z arguments."
-		}
-		console.log(getChunk(getRegion(x,z),x,z));
-	}
-
-	// returns a Promise. Resolve an empty object when successful
-	this.save = function(x,z,buffer) {
-
-	}
+async getRegion(x, z) {
+    var region = { x: x >> 5, z: z >> 5 };
+    var regionFile = 'world/lttp/r.'+region.x+'.'+region.z+'.mca';
+    var buf = fs.readFileSync(regionFile);  
+    var data = mcRegion(toArrayBuffer(buf),region.x,region.z);
+    return data;
 }
 
-var chunk = new module.exports;
-chunk.load(0,-32);
-
-function getRegion(x, z) {
-	var region = { x: x >> 5, z: z >> 5 };
-	var regionFile = 'world/lttp/r.'+region.x+'.'+region.z+'.mca';
-	var buf = fs.readFileSync(regionFile);	
-    region.data = mcRegion(toArrayBuffer(buf),region.x,region.z);
-    return region;
-}
-
-function getChunk(region, x, z) {
-	var regions = {};
-	var types = {};
+async getChunk(region, x, z) {
+    var regions = {};
+    var types = {};
     var opts = {
         ymin: 0,
         onVoxel: function(x, y, z, block, chunkX, chunkZ) {
@@ -47,11 +27,11 @@ function getChunk(region, x, z) {
                 else types[type] = 1
         }
     };
-    var view = readMCA(region.data, opts).loadChunk(x, z);
+    var view = readMCA(region, opts).loadChunk(x, z);
     return { regions: regions, types: types };
 }
 
-function toArrayBuffer(buffer) {
+async toArrayBuffer(buffer) {
     var ab = new ArrayBuffer(buffer.length);
     var typedarray = new Uint8Array(ab);
     for (var i = 0; i < buffer.length; ++i) {
@@ -59,3 +39,26 @@ function toArrayBuffer(buffer) {
     }
     return ab;
 }
+
+class Anvil {
+
+    // returns a Promise. Resolve a Chunk object or reject if it hasn’t been generated
+    async load(x,z) {
+        console.log("Loading Chunk at ", x,z);
+        if ((!x || !z) && (x !=0 && z !=0)) {
+            throw "Missing x or z arguments."
+        }
+        var region = await getRegion(x,z);
+        var chunk = await getChunk(region,x,z));
+        return chunk
+    }
+
+    // returns a Promise. Resolve an empty object when successful
+    async save(x,z,buffer) {
+
+    }
+}
+module.exports = Anvil;
+
+var chunk = new module.exports;
+chunk.load(0,-32);
