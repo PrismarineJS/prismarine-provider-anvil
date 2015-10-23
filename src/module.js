@@ -34,6 +34,7 @@ async function getChunk(region, x, z) {
     }
   };
   var view = readMCA(region, opts).loadChunk(x, z);
+  for(var x=0;x<16;x++) for(var z=0;z<16;z++) for(var y=0;y<256;y++) chunk.setSkyLight(new Vec3(x, y, z), 15);
   return { regions: regions, types: types, chunk:chunk };
 }
 
