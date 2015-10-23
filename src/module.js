@@ -1,15 +1,14 @@
 var readMCA = require('minecraft-mca');
 var mcRegion = require('minecraft-region');
-var fs = require('fs');
 var Chunk = require("prismarine-chunk")("1.8");
 var Vec3 = require("vec3");
+import {fs} from 'node-promise-es6';
 
 async function getRegion(path,x, z) {
   var region = { x: x >> 5, z: z >> 5 };
   var regionFile = path+'/r.'+region.x+'.'+region.z+'.mca';
-  var buf = fs.readFileSync(regionFile);
-  var data = mcRegion(await toArrayBuffer(buf),region.x,region.z);
-  return data;
+  var buf=await fs.readFile(regionFile);
+  return mcRegion(await toArrayBuffer(buf),region.x,region.z);
 }
 
 async function getChunk(region, x, z) {
