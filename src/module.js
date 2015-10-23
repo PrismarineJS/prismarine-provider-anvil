@@ -54,7 +54,6 @@ class Anvil {
 
   // returns a Promise. Resolve a Chunk object or reject if it hasn’t been generated
   async load(x,z) {
-    console.log("Loading Chunk at ", x,z);
     if (typeof x !== "number" || typeof z !== "number") {
      throw "Missing x or z arguments."
     }
