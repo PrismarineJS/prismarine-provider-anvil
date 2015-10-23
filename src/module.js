@@ -2,11 +2,11 @@ var readMCA = require('minecraft-mca');
 var mcRegion = require('minecraft-region');
 var fs = require('fs');
 
-async function getRegion(x, z) {
+async function getRegion(path,x, z) {
     var region = { x: x >> 5, z: z >> 5 };
-    var regionFile = 'world/lttp/r.'+region.x+'.'+region.z+'.mca';
+    var regionFile = path+'/r.'+region.x+'.'+region.z+'.mca';
     var buf = fs.readFileSync(regionFile);  
-    var data = mcRegion(toArrayBuffer(buf),region.x,region.z);
+    var data = mcRegion(await toArrayBuffer(buf),region.x,region.z);
     return data;
 }
 
@@ -42,13 +42,17 @@ async function toArrayBuffer(buffer) {
 
 class Anvil {
 
+  constructor(path) {
+    this.path=path;
+  }
+
     // returns a Promise. Resolve a Chunk object or reject if it hasn’t been generated
     async load(x,z) {
         console.log("Loading Chunk at ", x,z);
         if (typeof x !== "number" || typeof z !== "number") {
             throw "Missing x or z arguments."
         }
-        var region = await getRegion(x,z);
+        var region = await getRegion(this.path,x,z);
         var chunk = await getChunk(region,x,z);
         return chunk
     }
@@ -60,6 +64,3 @@ class Anvil {
 }
 
 module.exports = Anvil;
-
-var chunk = new Anvil;
-chunk.load(0,-32);
