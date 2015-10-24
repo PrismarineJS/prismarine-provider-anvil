@@ -1,14 +1,15 @@
 {
   "name": "prismarine-provider-anvil",
   "version": "0.0.0",
-  "description": "Boilerplate description",
+  "description": "Anvil Storage Provider implementation.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "prepublish": "gulp",
+    "test": "exit 0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/<you>/<module>.git"
+    "url": "https://github.com/PrismarineJS/prismarine-provider-anvil.git"
   },
   "keywords": [
     "minecraft",
@@ -17,12 +18,12 @@
     "world",
     "prismarine"
   ],
-  "author": "You Go Here <your_email@here> (http://your.website.here/)",
+  "author": "Romain Beaumont <romain.rom1@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/<you>/<module>/issues"
+    "url": "https://github.com/PrismarineJS/prismarine-provider-anvil/issues"
   },
-  "homepage": "https://github.com/<you>/<module>",
+  "homepage": "https://github.com/PrismarineJS/prismarine-provider-anvil",
   "devDependencies": {
     "gulp": "^3.8.11",
     "gulp-babel": "^5.1.0",
