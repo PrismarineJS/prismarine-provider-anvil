@@ -6,3 +6,10 @@ Anvil Storage Provider implementation.
 ## Usage
 
 See [example.js](example.js)
+
+
+## History
+
+### 0.0.0
+
+* first version, basic functionality using minecraft-chunk, minecraft-region, prismarine-chunk and vec3
