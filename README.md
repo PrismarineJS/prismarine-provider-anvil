@@ -10,6 +10,10 @@ See [example.js](example.js)
 
 ## History
 
+### 0.0.1
+
+* catch the error if the region file doesn't exist and return null in getRegion
+
 ### 0.0.0
 
 * first version, basic functionality using minecraft-chunk, minecraft-region, prismarine-chunk and vec3
