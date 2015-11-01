@@ -7,7 +7,12 @@ import {fs} from 'node-promise-es6';
 async function getRegion(path,x, z) {
   var region = { x: x >> 5, z: z >> 5 };
   var regionFile = path+'/r.'+region.x+'.'+region.z+'.mca';
-  var buf=await fs.readFile(regionFile);
+  try {
+    var buf = await fs.readFile(regionFile);
+  }
+  catch(err) {
+    return null;
+  }
   return mcRegion(await toArrayBuffer(buf),region.x,region.z);
 }
 
@@ -58,8 +63,9 @@ class Anvil {
      throw "Missing x or z arguments."
     }
     var region = await getRegion(this.path,x,z);
-    var chunk = await getChunk(region,x,z);
-    return chunk
+    if(region==null)
+      return null;
+    return getChunk(region,x,z);
   }
 
   // returns a Promise. Resolve an empty object when successful
