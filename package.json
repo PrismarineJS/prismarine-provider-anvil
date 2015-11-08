@@ -35,7 +35,7 @@
   "dependencies": {
     "babel-runtime": "^5.4.4",
     "minecraft-mca": "^0.6.1",
-    "minecraft-region": "^0.3.1",
+    "minecraft-region": "rom1504/minecraft-region#patch-1",
     "node-promise-es6": "^0.2.3",
     "prismarine-chunk": "^0.2.1",
     "vec3": "^0.1.3"
