@@ -10,6 +10,10 @@ See [example.js](example.js)
 
 ## History
 
+### 0.0.2
+
+* use up to date dependencies in minecraft-region
+
 ### 0.0.1
 
 * catch the error if the region file doesn't exist and return null in getRegion

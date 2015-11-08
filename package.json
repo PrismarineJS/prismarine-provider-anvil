@@ -1,6 +1,6 @@
 {
   "name": "prismarine-provider-anvil",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Anvil Storage Provider implementation.",
   "main": "index.js",
   "scripts": {
