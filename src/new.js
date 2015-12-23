@@ -5,28 +5,26 @@ import promisify from 'es6-promisify';
 
 function getChunk(path,x,z)
 {
-  return readChunkFromRegion(path,x,z)
-    .then(function(buf){return readColumn(buf,x,z)})
+  return openRegionFileOfChunk(path,x,z)
+    .then(function(handle){return readColumn(handle,x,z)})
     .then(readChunk);
 }
 
-async function readChunkFromRegion(path,x, z) {
+async function openRegionFileOfChunk(path,x, z) {
   const region = { x: x >> 5, z: z >> 5 };
   const regionFile = path+'/r.'+region.x+'.'+region.z+'.mca';
   try {
-    var buf = await fs.readFile(regionFile);
+    return await fs.open(regionFile,'r');
   }
   catch(err) {
     return null;
   }
-  return buf;
 }
 
-function readColumn(buf,x,z)
+async function readColumn(handle,x,z)
 {
-  const locations = buf.slice(0,4096);
-  const timestamps = buf.slice(4096,8192);
-  const data = buf.slice(8192);
+  const locations = (await fs.read(handle,new Buffer(4096),0,4096,0)).buffer;
+  const timestamps = (await fs.read(handle,new Buffer(4096),0,4096,4096)).buffer;
 
   const x_offset=x&31;
   const z_offset = z & 31;
@@ -38,12 +36,15 @@ function readColumn(buf,x,z)
   else {
     offset -= 2;
     const sector_count = chunk_location[3];
-    return data.slice(4096 * offset,4096 * (offset + sector_count));
+    return (await fs.read(handle,new Buffer(4096*sector_count),0,4096 * sector_count,4096 * offset)).buffer;
   }
 }
 
-function writeColumn(data,x,z)
+function writeColumn(data,buffer,x,z)
 {
+  const x_offset=x&31;
+  const z_offset = z & 31;
+  const meta_offset = 4 * (x_offset + z_offset * 32);
 
 }
 
