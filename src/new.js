@@ -3,11 +3,11 @@ import nbt from 'prismarine-nbt';
 import zlib from 'zlib';
 import promisify from 'es6-promisify';
 
-function getChunk(path,x,z)
+async function getChunk(path,x,z)
 {
-  return openRegionFileOfChunk(path,'r+',x,z)
-    .then(handle => readColumn(handle,x,z))
-    .then(readChunk);
+  const handle=await openRegionFileOfChunk(path,'r',x,z);
+  const chunkData=await readColumn(handle,x,z);
+  return readChunk(chunkData);
 }
 
 function setChunk(path,nbtData,x,z)
@@ -17,9 +17,14 @@ function setChunk(path,nbtData,x,z)
     .then(({handle,data}) => writeColumn(handle,data,x,z));
 }
 
-async function openRegionFileOfChunk(path,options,x, z) {
+function regionFileName(path,x,z)
+{
   const region = { x: x >> 5, z: z >> 5 };
-  const regionFile = path+'/r.'+region.x+'.'+region.z+'.mca';
+  return  path+'/r.'+region.x+'.'+region.z+'.mca';
+}
+
+async function openRegionFileOfChunk(path,options,x, z) {
+  const regionFile=regionFileName(path,x,z);
   try {
     return await fs.open(regionFile,options);
   }
@@ -39,21 +44,23 @@ async function readLocationOffset(handle,x,z)
 {
   const meta_offset=getLocationOffset(x,z);
   const chunk_location = (await fs.read(handle,new Buffer(4),0,4,meta_offset)).buffer;
-  let offset = chunk_location[0] * (256 * 256) + chunk_location[1] * 256 + chunk_location[2];
-  if(offset == 0)
+  let offset = chunk_location.readUInt32BE(0);
+  let sectorNumber = offset >> 8;
+  let numSectors = offset & 0xFF;
+  if(sectorNumber == 0)
     return null;
   else {
-    offset -= 2;
-    const sector_count = chunk_location[3];
     return {
-      offset:4096 * offset,
-      size:4096*sector_count
+      offset:4096 * sectorNumber,
+      size:4096*numSectors
     }
   }
 }
 
 async function readColumn(handle,x,z)
 {
+  if(handle==null)
+    return null;
   const r=await readLocationOffset(handle,x,z);
   if(r==null)
     return null;
@@ -104,4 +111,4 @@ async function writeChunk(nbtData)
   return buffer;
 }
 
-module.exports={getChunk,setChunk};
+module.exports={getChunk,setChunk,regionFileName};
