@@ -1,5 +1,4 @@
 var RegionFile=require('./region');
-var regionFileName=require('./new').regionFileName;
 
 class Anvil {
 
@@ -10,11 +9,17 @@ class Anvil {
     this.regions={};
   }
 
+  regionFileName(x,z)
+  {
+    const region = { x: x >> 5, z: z >> 5 };
+    return this.path+'/r.'+region.x+'.'+region.z+'.mca';
+  }
+
   async getRegion(x,z) {
     if (typeof x !== "number" || typeof z !== "number") {
       throw "Missing x or z arguments."
     }
-    var name=regionFileName(this.path,x,z);
+    var name=this.regionFileName(this.path,x,z);
     let region = this.regions[name];
     if(region== undefined) {
       region = new RegionFile(name);
