@@ -121,7 +121,8 @@ class RegionFile {
     const length=(await fs.read(this.file,new Buffer(4),0,4,sectorNumber * RegionFile.SECTOR_BYTES)).buffer.readUInt32BE(0);
 
     if (length > RegionFile.SECTOR_BYTES * numSectors) {
-      throw new Error("READ"+ x+","+ z+ " invalid length: " + length + " > 4096 * " + numSectors);
+      RegionFile.debug("READ"+ x+","+ z+ " invalid length: " + length + " > 4096 * " + numSectors);
+      return null;
     }
 
     const version = (await fs.read(this.file,new Buffer(1),0,1,sectorNumber * RegionFile.SECTOR_BYTES+4)).buffer.readUInt8(0);
