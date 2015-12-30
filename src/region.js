@@ -99,21 +99,23 @@ class RegionFile {
    * gets an (uncompressed) stream representing the chunk data returns null if
    * the chunk is not found or an error occurs
    */
-  async getChunkDataInputStream(x, z) {
+  async read(x, z) {
     if (RegionFile.outOfBounds(x, z)) {
       throw new Error("READ "+ x+","+ z+ " out of bounds");
     }
 
     const offset = this.getOffset(x, z);
     if (offset == 0) {
-      throw new Error("READ "+ x+","+ z+ " miss");
+      RegionFile.debug("READ "+ x+","+ z+ " miss");
+      return null;
     }
 
     const sectorNumber = offset >> 8;
     const numSectors = offset & 0xFF;
 
     if (sectorNumber + numSectors > this.sectorFree.length) {
-      throw new Error("READ "+ x+","+ z+ " invalid sector");
+      RegionFile.debug("READ "+ x+","+ z+ " invalid sector");
+      return null;
     }
 
     const length=(await fs.read(this.file,new Buffer(4),0,4,sectorNumber * RegionFile.SECTOR_BYTES)).buffer.readUInt32BE(0);
@@ -155,7 +157,7 @@ class RegionFile {
 
     if (sectorNumber != 0 && sectorsAllocated == sectorsNeeded) {
       /* we can simply overwrite the old sectors */
-      //console.log("SAVE", x, z, length, "rewrite");
+      RegionFile.debug("SAVE "+ x+", "+z+", " +length+", "+ "rewrite");
       await this.writeChunk(sectorNumber, data, length);
     } else {
       /* we need to allocate new sectors */
@@ -184,10 +186,9 @@ class RegionFile {
       }
 
       if (runLength >= sectorsNeeded) {
-        //console.log("SAVE", x, z, length, "reuse");
+        RegionFile.debug("SAVE "+x+", "+z+", "+ length+ " reuse");
         /* we found a free space large enough */
         sectorNumber = runStart;
-        console.log("sector",x,z,(sectorNumber << 8) | sectorsNeeded);
         await this.setOffset(x, z, (sectorNumber << 8) | sectorsNeeded);
         for (let i = 0; i < sectorsNeeded; ++i) {
           this.sectorFree[sectorNumber + i]= false;
@@ -199,7 +200,7 @@ class RegionFile {
          * file
          */
 
-        //console.log("SAVE", x, z, length, "grow");
+        RegionFile.debug("SAVE "+ x+", "+z+", "+ length+ " grow");
         let stat=await fs.stat(this.fileName);
         let toGrow=sectorsNeeded*RegionFile.SECTOR_BYTES;
         await fs.write(this.file,(new Buffer(toGrow)).fill(0),0,toGrow,stat.size);
@@ -254,6 +255,13 @@ class RegionFile {
   {
     await fs.close(this.file);
   };
+}
+
+if(process.env.NODE_DEBUG && /anvil/.test(process.env.NODE_DEBUG)) {
+  RegionFile.debug=console.log;
+}
+else {
+  RegionFile.debug=() => {};
 }
 
 module.exports=RegionFile;
