@@ -5,7 +5,7 @@ Anvil Storage Provider implementation.
 
 ## Usage
 
-See [example.js](example.js)
+See [example_read.js](example_read.js) and [example_write.js](example_write.js) 
 
 
 ## History

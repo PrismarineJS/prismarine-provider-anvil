@@ -1,4 +1,5 @@
-var RegionFile=require('./region');
+const RegionFile=require('./region');
+const {getNbtValue,nbtChunkToPrismarineChunk}=require('./chunk');
 
 class Anvil {
 
@@ -31,6 +32,12 @@ class Anvil {
 
   // returns a Promise. Resolve a Chunk object or reject if it hasn’t been generated
   async load(x,z) {
+    const data=await this.loadRaw(x,z);
+    const value=getNbtValue(data);
+    return nbtChunkToPrismarineChunk(value);
+  }
+
+  async loadRaw(x,z) {
     const region=await this.getRegion(x,z);
     return await region.read(x & 0x1F,z & 0x1F);
   }
