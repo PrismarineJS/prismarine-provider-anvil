@@ -33,6 +33,8 @@ class Anvil {
   // returns a Promise. Resolve a Chunk object or reject if it hasn’t been generated
   async load(x,z) {
     const data=await this.loadRaw(x,z);
+    if(data==null)
+      return null;
     const value=getNbtValue(data);
     return nbtChunkToPrismarineChunk(value);
   }
