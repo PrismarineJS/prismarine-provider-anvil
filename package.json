@@ -36,6 +36,7 @@
   "dependencies": {
     "babel-runtime": "^5.4.4",
     "es6-promisify": "^3.0.0",
+    "fd-slicer": "^1.0.1",
     "node-promise-es6": "^0.2.3",
     "prismarine-chunk": "^0.2.1",
     "prismarine-nbt": "^0.1.0",

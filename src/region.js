@@ -2,6 +2,10 @@ import {fs} from 'node-promise-es6';
 import nbt from 'prismarine-nbt';
 import zlib from 'zlib';
 import promisify from 'es6-promisify';
+import fdSlicer from 'fd-slicer';
+
+fdSlicer.FdSlicer.prototype.read=promisify(fdSlicer.FdSlicer.prototype.read);
+fdSlicer.FdSlicer.prototype.write=promisify(fdSlicer.FdSlicer.prototype.write);
 
 class RegionFile {
 
@@ -32,12 +36,11 @@ class RegionFile {
 
     this.sizeDelta = 0;
 
-
     try {
-      this.file = await fs.open(this.fileName,'r+');
+      this.file = fdSlicer.createFromFd(await fs.open(this.fileName,'r+'));
     }
     catch(err) {
-      this.file = await fs.open(this.fileName,'w+');
+      this.file = fdSlicer.createFromFd(await fs.open(this.fileName,'w+'));
     }
 
     let stat=await fs.stat(this.fileName);
@@ -47,8 +50,8 @@ class RegionFile {
 
 
     if (stat.size < RegionFile.SECTOR_BYTES) {
-      await fs.write(this.file,new Buffer(RegionFile.SECTOR_BYTES),0,RegionFile.SECTOR_BYTES,0);
-      await fs.write(this.file,new Buffer(RegionFile.SECTOR_BYTES),0,RegionFile.SECTOR_BYTES,RegionFile.SECTOR_BYTES);
+      await this.file.write(new Buffer(RegionFile.SECTOR_BYTES),0,RegionFile.SECTOR_BYTES,0);
+      await this.file.write(new Buffer(RegionFile.SECTOR_BYTES),0,RegionFile.SECTOR_BYTES,RegionFile.SECTOR_BYTES);
 
       this.sizeDelta += RegionFile.SECTOR_BYTES * 2;
     }
@@ -56,7 +59,7 @@ class RegionFile {
     if ((stat.size & 0xfff) != 0) {
       /* the file size is not a multiple of 4KB, grow it */
       const remaining=RegionFile.SECTOR_BYTES-stat.size & 0xfff;
-      await fs.write(this.file,(new Buffer(remaining)).fill(0),0,remaining,stat.size);
+      await this.file.write((new Buffer(remaining)).fill(0),0,remaining,stat.size);
     }
 
     /* set up the available sector map */
@@ -71,7 +74,7 @@ class RegionFile {
     this.sectorFree[0]=false; // chunk offset table
     this.sectorFree[1]=false; // for the last modified info
 
-    const offsets=(await fs.read(this.file,new Buffer(RegionFile.SECTOR_BYTES),0,RegionFile.SECTOR_BYTES,0)).buffer;
+    const offsets=(await this.file.read(new Buffer(RegionFile.SECTOR_BYTES),0,RegionFile.SECTOR_BYTES,0))[1];
     for (let i = 0; i < RegionFile.SECTOR_INTS; ++i) {
       let offset = offsets.readUInt32BE(i*4);
       this.offsets[i] = offset;
@@ -81,8 +84,8 @@ class RegionFile {
         }
       }
     }
-    const chunkTimestamps=(await fs.read(this.file,new Buffer(RegionFile.SECTOR_BYTES),0,RegionFile.SECTOR_BYTES,
-      RegionFile.SECTOR_BYTES)).buffer;
+    const chunkTimestamps=(await this.file.read(new Buffer(RegionFile.SECTOR_BYTES),0,RegionFile.SECTOR_BYTES,
+      RegionFile.SECTOR_BYTES))[1];
     for (let  i = 0; i < RegionFile.SECTOR_INTS; ++i) {
       this.chunkTimestamps[i] = chunkTimestamps.readUInt32BE(i*4);
     }
@@ -118,15 +121,15 @@ class RegionFile {
       return null;
     }
 
-    const length=(await fs.read(this.file,new Buffer(4),0,4,sectorNumber * RegionFile.SECTOR_BYTES)).buffer.readUInt32BE(0);
+    const length=(await this.file.read(new Buffer(4),0,4,sectorNumber * RegionFile.SECTOR_BYTES))[1].readUInt32BE(0);
 
     if (length > RegionFile.SECTOR_BYTES * numSectors) {
       RegionFile.debug("READ"+ x+","+ z+ " invalid length: " + length + " > 4096 * " + numSectors);
       return null;
     }
 
-    const version = (await fs.read(this.file,new Buffer(1),0,1,sectorNumber * RegionFile.SECTOR_BYTES+4)).buffer.readUInt8(0);
-    const data = (await fs.read(this.file,new Buffer(length-1),0,length-1,sectorNumber * RegionFile.SECTOR_BYTES+5)).buffer;
+    const version = (await this.file.read(new Buffer(1),0,1,sectorNumber * RegionFile.SECTOR_BYTES+4))[1].readUInt8(0);
+    const data = (await this.file.read(new Buffer(length-1),0,length-1,sectorNumber * RegionFile.SECTOR_BYTES+5))[1];
 
     let decompress;
     if(version == RegionFile.VERSION_GZIP) // gzip
@@ -204,7 +207,7 @@ class RegionFile {
         RegionFile.debug("SAVE "+ x+", "+z+", "+ length+ " grow");
         let stat=await fs.stat(this.fileName);
         let toGrow=sectorsNeeded*RegionFile.SECTOR_BYTES;
-        await fs.write(this.file,(new Buffer(toGrow)).fill(0),0,toGrow,stat.size);
+        await this.file.write((new Buffer(toGrow)).fill(0),0,toGrow,stat.size);
         this.sizeDelta += RegionFile.SECTOR_BYTES * sectorsNeeded;
 
         await this.writeChunk(sectorNumber, data, length);
@@ -220,7 +223,7 @@ class RegionFile {
     buffer.writeUInt32BE(length,0);
     buffer.writeUInt8(RegionFile.VERSION_DEFLATE,4);
     data.copy(buffer,5);
-    await fs.write(this.file,buffer,0,buffer.length,sectorNumber * RegionFile.SECTOR_BYTES);
+    await this.file.write(buffer,0,buffer.length,sectorNumber * RegionFile.SECTOR_BYTES);
   }
 
   /* is this an invalid chunk coordinate? */
@@ -240,7 +243,7 @@ class RegionFile {
     this.offsets[x + z * 32] = offset;
     const buffer=new Buffer(4);
     buffer.writeInt32BE(offset);
-    await fs.write(this.file,buffer,0,buffer.length,(x + z * 32) * 4);
+    await this.file.write(buffer,0,buffer.length,(x + z * 32) * 4);
   }
 
   async setTimestamp(x, z, value)
@@ -248,7 +251,7 @@ class RegionFile {
     this.chunkTimestamps[x + z * 32] = value;
     const buffer=new Buffer(4);
     buffer.writeInt32BE(value);
-    await fs.write(this.file,buffer,0,buffer.length,RegionFile.SECTOR_BYTES + (x + z * 32) * 4);
+    await this.file.write(buffer,0,buffer.length,RegionFile.SECTOR_BYTES + (x + z * 32) * 4);
   }
 
 
