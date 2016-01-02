@@ -1,5 +1,6 @@
 var Chunk = require("prismarine-chunk")("1.8");
 var Vec3 = require("vec3").Vec3;
+var { readUInt4LE, writeUInt4LE } = require('uint4');
 
 function getNbtValue(data)
 {
@@ -30,15 +31,59 @@ function nbtChunkToPrismarineChunk(nbt)
 function readSections(chunk,sections)
 {
   sections.forEach(({Y,Blocks,Add,Data,BlockLight,SkyLight})=> {
-    Blocks=new Buffer(Blocks);
-    for(let index=0;index<Blocks.length;index++) {
-      const blockType=Blocks.readUInt8(index);
-      const y=index >> 8;
-      const z=(index >> 4) & 0xf;
-      const x=index & 0xf;
-      chunk.setBlockType(new Vec3(x,Y*16+y,z),blockType);
-    }
+    readBlocks(chunk,Y,Blocks);
+    readSkylight(chunk,Y,SkyLight);
+    readBlocklight(chunk,Y,BlockLight);
+    readMetadata(chunk,Y,Data);
   });
+}
+
+function indexToPos(index,sectionY)
+{
+  const y=index >> 8;
+  const z=(index >> 4) & 0xf;
+  const x=index & 0xf;
+  return new Vec3(x,sectionY*16+y,z);
+}
+
+function readMetadata(chunk,sectionY,metadata)
+{
+  metadata=new Buffer(metadata);
+  for(let index=0;index<metadata.length;index+=0.5) {
+    const meta=readUInt4LE(metadata,index);
+    const pos=indexToPos(index*2,sectionY);
+    chunk.setBlockData(pos,meta);
+  }
+}
+
+function readBlocklight(chunk,sectionY,blockLights)
+{
+  blockLights=new Buffer(blockLights);
+  for(let index=0;index<blockLights.length;index+=0.5) {
+    const blockLight=readUInt4LE(blockLights,index);
+    const pos=indexToPos(index*2,sectionY);
+    chunk.setBlockLight(pos,blockLight);
+  }
+}
+
+function readSkylight(chunk,sectionY,skylights)
+{
+  skylights=new Buffer(skylights);
+  for(let index=0;index<skylights.length;index+=0.5) {
+    const skylight=readUInt4LE(skylights,index);
+    const pos=indexToPos(index*2,sectionY);
+    chunk.setSkyLight(pos,skylight);
+  }
+}
+
+function readBlocks(chunk,sectionY,blocks)
+{
+  blocks=new Buffer(blocks);
+  for(let index=0;index<blocks.length;index++) {
+    const blockType=blocks.readUInt8(index);
+    const pos=indexToPos(index,sectionY);
+    chunk.setBlockType(pos,blockType);
+  }
 }
 
 function readBiomes(chunk,biomes)

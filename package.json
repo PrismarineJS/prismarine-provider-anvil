@@ -40,6 +40,7 @@
     "node-promise-es6": "^0.2.3",
     "prismarine-chunk": "^0.2.1",
     "prismarine-nbt": "^0.1.0",
+    "uint4": "^0.1.2",
     "vec3": "^0.1.3"
   }
 }
