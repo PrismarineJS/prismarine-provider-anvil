@@ -29,25 +29,27 @@ function nbtChunkToPrismarineChunk(nbt)
 
 function readSections(chunk,sections)
 {
-  sections.forEach(({Y,Blocks,Add,Data,BlockLight,SkyLight},index)=> {
+  sections.forEach(({Y,Blocks,Add,Data,BlockLight,SkyLight})=> {
     Blocks=new Buffer(Blocks);
-    Blocks.forEach((blockType,index) => {
+    for(let index=0;index<Blocks.length;index++) {
+      const blockType=Blocks.readUInt8(index);
       const y=index >> 8;
       const z=(index >> 4) & 0xf;
       const x=index & 0xf;
       chunk.setBlockType(new Vec3(x,Y*16+y,z),blockType);
-    })
+    }
   });
 }
 
 function readBiomes(chunk,biomes)
 {
   biomes=new Buffer(biomes);
-  biomes.forEach((biome,index) => {
+  for(let index=0;index<biomes.length;index++) {
+    const biome=biomes.readUInt8(index);
     const z=index >> 4;
     const x=index & 0xF;
     chunk.setBiome(new Vec3(x,0,z),biome);
-  });
+  }
 }
 
 module.exports={getNbtValue,nbtChunkToPrismarineChunk};
