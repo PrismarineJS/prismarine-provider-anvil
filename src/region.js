@@ -7,6 +7,13 @@ import fdSlicer from 'fd-slicer';
 fdSlicer.FdSlicer.prototype.read=promisify(fdSlicer.FdSlicer.prototype.read);
 fdSlicer.FdSlicer.prototype.write=promisify(fdSlicer.FdSlicer.prototype.write);
 
+function createFilledBuffer(size,value)
+{
+  const b=new Buffer(size);
+  b.fill(value);
+  return b;
+}
+
 class RegionFile {
 
   static VERSION_GZIP = 1;
@@ -50,8 +57,8 @@ class RegionFile {
 
 
     if (stat.size < RegionFile.SECTOR_BYTES) {
-      await this.file.write(new Buffer(RegionFile.SECTOR_BYTES).fill(0),0,RegionFile.SECTOR_BYTES,0);
-      await this.file.write(new Buffer(RegionFile.SECTOR_BYTES).fill(0),0,RegionFile.SECTOR_BYTES,RegionFile.SECTOR_BYTES);
+      await this.file.write(createFilledBuffer(RegionFile.SECTOR_BYTES,0),0,RegionFile.SECTOR_BYTES,0);
+      await this.file.write(createFilledBuffer(RegionFile.SECTOR_BYTES,0),0,RegionFile.SECTOR_BYTES,RegionFile.SECTOR_BYTES);
 
       this.sizeDelta += RegionFile.SECTOR_BYTES * 2;
     }
@@ -59,7 +66,7 @@ class RegionFile {
     if ((stat.size & 0xfff) != 0) {
       /* the file size is not a multiple of 4KB, grow it */
       const remaining=RegionFile.SECTOR_BYTES-stat.size & 0xfff;
-      await this.file.write((new Buffer(remaining)).fill(0),0,remaining,stat.size);
+      await this.file.write(createFilledBuffer(remaining,0),0,remaining,stat.size);
     }
 
     /* set up the available sector map */
@@ -213,7 +220,7 @@ class RegionFile {
         sectorNumber = this.sectorFree.length;
         let stat=await fs.stat(this.fileName);
         let toGrow=sectorsNeeded*RegionFile.SECTOR_BYTES;
-        await this.file.write((new Buffer(toGrow)).fill(0),0,toGrow,stat.size);
+        await this.file.write(createFilledBuffer(toGrow,0),0,toGrow,stat.size);
         this.sizeDelta += RegionFile.SECTOR_BYTES * sectorsNeeded;
 
         await this.writeChunk(sectorNumber, data, length);
@@ -248,7 +255,7 @@ class RegionFile {
   async setOffset(x, z, offset)  {
     this.offsets[x + z * 32] = offset;
     const buffer=new Buffer(4);
-    buffer.writeInt32BE(offset);
+    buffer.writeInt32BE(offset,0);
     await this.file.write(buffer,0,buffer.length,(x + z * 32) * 4);
   }
 
@@ -256,7 +263,7 @@ class RegionFile {
   {
     this.chunkTimestamps[x + z * 32] = value;
     const buffer=new Buffer(4);
-    buffer.writeInt32BE(value);
+    buffer.writeInt32BE(value,0);
     await this.file.write(buffer,0,buffer.length,RegionFile.SECTOR_BYTES + (x + z * 32) * 4);
   }
 
