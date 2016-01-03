@@ -45,14 +45,12 @@ class Anvil {
 
   // returns a Promise. Resolve an empty object when successful
   async save(x,z,chunk) {
-    const nbt=prismarineChunkToNbt(chunk);
-    let region=await this.getRegion(x,z);
-    return await region.write(x & 0x1F,z & 0x1F,nbt);
+    await this.saveRaw(x,z,prismarineChunkToNbt(chunk));
   }
 
-  async saveRaw(x,z,chunk) {
+  async saveRaw(x,z,nbt) {
     let region=await this.getRegion(x,z);
-    return await region.write(x & 0x1F,z & 0x1F,chunk);
+    await region.write(x & 0x1F,z & 0x1F,nbt);
   }
 }
 
