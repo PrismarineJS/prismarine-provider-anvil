@@ -25,13 +25,14 @@
   },
   "homepage": "https://github.com/PrismarineJS/prismarine-provider-anvil",
   "devDependencies": {
+    "buffer-equal": "^1.0.0",
     "gulp": "^3.8.11",
     "gulp-babel": "^5.1.0",
     "gulp-plumber": "^1.0.1",
     "gulp-sourcemaps": "^1.3.0",
     "intelli-espower-loader": "^1.0.0",
-    "mocha": "^2.1.0",
-    "minecraft-data": "0.7.0"
+    "minecraft-data": "0.7.0",
+    "mocha": "^2.1.0"
   },
   "dependencies": {
     "babel-runtime": "^5.4.4",

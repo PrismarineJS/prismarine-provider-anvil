@@ -20,22 +20,72 @@ function getNbtValue(data)
   return transform(data.value,data.type);
 }
 
-function nbtChunkToPrismarineChunk(nbt)
+function nbtChunkToPrismarineChunk(data)
 {
+  let nbt=getNbtValue(data);
   const chunk=new Chunk();
   readSections(chunk,nbt.Level.Sections);
   readBiomes(chunk,nbt.Level.Biomes);
   return chunk;
 }
 
+function prismarineChunkToNbt(chunk)
+{
+  return {
+    "name":"",
+    "type":"compound",
+    "value":{
+      "Level":{
+        "type":"compound",
+        "value":{
+          Biomes:writeBiomes(chunk),
+          Sections:writeSections(chunk)
+        }
+      }
+    }
+  };
+}
+
 function readSections(chunk,sections)
 {
-  sections.forEach(({Y,Blocks,Add,Data,BlockLight,SkyLight})=> {
-    readBlocks(chunk,Y,Blocks);
-    readSkylight(chunk,Y,SkyLight);
-    readBlocklight(chunk,Y,BlockLight);
-    readMetadata(chunk,Y,Data);
-  });
+  sections.forEach(section => readSection(chunk,section));
+}
+
+function writeSections(chunk)
+{
+  const sections=[];
+  for(let sectionY=0;sectionY<16;sectionY++)
+    sections.push(writeSection(chunk,sectionY));
+
+  return {
+    "type":"list",
+    "value":{
+      "type":"compound",
+      "value":sections
+    }
+  };
+}
+
+function readSection(chunk,{Y,Blocks,Add,Data,BlockLight,SkyLight})
+{
+  readBlocks(chunk,Y,Blocks);
+  readSkyLight(chunk,Y,SkyLight);
+  readBlockLight(chunk,Y,BlockLight);
+  readData(chunk,Y,Data);
+}
+
+function writeSection(chunk,sectionY)
+{
+  return {
+    Y:{
+      type:"byte",
+      value:sectionY
+    },
+    Blocks:writeBlocks(chunk,sectionY),
+    Data:writeData(chunk,sectionY),
+    BlockLight:writeBlockLight(chunk,sectionY),
+    SkyLight:writeSkyLight(chunk,sectionY),
+  };
 }
 
 function indexToPos(index,sectionY)
@@ -46,7 +96,39 @@ function indexToPos(index,sectionY)
   return new Vec3(x,sectionY*16+y,z);
 }
 
-function readMetadata(chunk,sectionY,metadata)
+function readBlocks(chunk,sectionY,blocks)
+{
+  blocks=new Buffer(blocks);
+  for(let index=0;index<blocks.length;index++) {
+    const blockType=blocks.readUInt8(index);
+    const pos=indexToPos(index,sectionY);
+    chunk.setBlockType(pos,blockType);
+  }
+}
+
+function toSignedArray(buffer)
+{
+  let arr=[];
+  for(let index=0;index<buffer.length;index++)
+    arr.push(buffer.readInt8(index));
+  return arr;
+}
+
+function writeBlocks(chunk,sectionY)
+{
+  const buffer=new Buffer(16*16*16);
+  for(let y=0;y<16;y++)
+    for(let z=0;z<16;z++)
+      for(let x=0;x<16;x++) {
+        buffer.writeUInt8(chunk.getBlockType(new Vec3(x, y + sectionY * 16, z)),x + 16 * (z + 16 * y));
+      }
+  return {
+    "type":"byteArray",
+    "value":toSignedArray(buffer)
+  }
+}
+
+function readData(chunk,sectionY,metadata)
 {
   metadata=new Buffer(metadata);
   for(let index=0;index<metadata.length;index+=0.5) {
@@ -56,7 +138,20 @@ function readMetadata(chunk,sectionY,metadata)
   }
 }
 
-function readBlocklight(chunk,sectionY,blockLights)
+function writeData(chunk,sectionY)
+{
+  const buffer=new Buffer(16*16*8);
+  for(let y=0;y<16;y++)
+    for(let z=0;z<16;z++)
+      for(let x=0;x<16;x++)
+        writeUInt4LE(buffer,chunk.getBlockData(new Vec3(x,y+sectionY*16,z)),(x+16*(z+16*y))*0.5);
+  return {
+    "type":"byteArray",
+    "value":toSignedArray(buffer)
+  }
+}
+
+function readBlockLight(chunk,sectionY,blockLights)
 {
   blockLights=new Buffer(blockLights);
   for(let index=0;index<blockLights.length;index+=0.5) {
@@ -66,7 +161,20 @@ function readBlocklight(chunk,sectionY,blockLights)
   }
 }
 
-function readSkylight(chunk,sectionY,skylights)
+function writeBlockLight(chunk,sectionY)
+{
+  const buffer=new Buffer(16*16*8);
+  for(let y=0;y<16;y++)
+    for(let z=0;z<16;z++)
+      for(let x=0;x<16;x++)
+        writeUInt4LE(buffer,chunk.getBlockLight(new Vec3(x,y+sectionY*16,z)),(x+16*(z+16*y))*0.5);
+  return {
+    "type":"byteArray",
+    "value":toSignedArray(buffer)
+  }
+}
+
+function readSkyLight(chunk,sectionY,skylights)
 {
   skylights=new Buffer(skylights);
   for(let index=0;index<skylights.length;index+=0.5) {
@@ -76,13 +184,16 @@ function readSkylight(chunk,sectionY,skylights)
   }
 }
 
-function readBlocks(chunk,sectionY,blocks)
+function writeSkyLight(chunk,sectionY)
 {
-  blocks=new Buffer(blocks);
-  for(let index=0;index<blocks.length;index++) {
-    const blockType=blocks.readUInt8(index);
-    const pos=indexToPos(index,sectionY);
-    chunk.setBlockType(pos,blockType);
+  const buffer=new Buffer(16*16*8);
+  for(let y=0;y<16;y++)
+    for(let z=0;z<16;z++)
+      for(let x=0;x<16;x++)
+        writeUInt4LE(buffer,chunk.getSkyLight(new Vec3(x,y+sectionY*16,z)),(x+16*(z+16*y))*0.5);
+  return {
+    "type":"byteArray",
+    "value":toSignedArray(buffer)
   }
 }
 
@@ -97,4 +208,18 @@ function readBiomes(chunk,biomes)
   }
 }
 
-module.exports={getNbtValue,nbtChunkToPrismarineChunk};
+function writeBiomes(chunk)
+{
+  const biomes=[];
+  for(let z=0;z<16;z++)
+    for(let x=0;x<16;x++)
+      biomes.push(chunk.getBiome(new Vec3(x,0,z)));
+  return {
+    "value":biomes,
+    "type":"byteArray"
+  };
+}
+
+
+
+module.exports={getNbtValue,nbtChunkToPrismarineChunk,prismarineChunkToNbt};

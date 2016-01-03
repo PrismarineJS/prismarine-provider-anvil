@@ -1,5 +1,5 @@
 const RegionFile=require('./region');
-const {getNbtValue,nbtChunkToPrismarineChunk}=require('./chunk');
+const {nbtChunkToPrismarineChunk,prismarineChunkToNbt}=require('./chunk');
 
 class Anvil {
 
@@ -35,8 +35,7 @@ class Anvil {
     const data=await this.loadRaw(x,z);
     if(data==null)
       return null;
-    const value=getNbtValue(data);
-    return nbtChunkToPrismarineChunk(value);
+    return nbtChunkToPrismarineChunk(data);
   }
 
   async loadRaw(x,z) {
@@ -46,6 +45,12 @@ class Anvil {
 
   // returns a Promise. Resolve an empty object when successful
   async save(x,z,chunk) {
+    const nbt=prismarineChunkToNbt(chunk);
+    let region=await this.getRegion(x,z);
+    return await region.write(x & 0x1F,z & 0x1F,nbt);
+  }
+
+  async saveRaw(x,z,chunk) {
     let region=await this.getRegion(x,z);
     return await region.write(x & 0x1F,z & 0x1F,chunk);
   }
