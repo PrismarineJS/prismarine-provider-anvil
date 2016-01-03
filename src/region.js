@@ -50,8 +50,8 @@ class RegionFile {
 
 
     if (stat.size < RegionFile.SECTOR_BYTES) {
-      await this.file.write(new Buffer(RegionFile.SECTOR_BYTES),0,RegionFile.SECTOR_BYTES,0);
-      await this.file.write(new Buffer(RegionFile.SECTOR_BYTES),0,RegionFile.SECTOR_BYTES,RegionFile.SECTOR_BYTES);
+      await this.file.write(new Buffer(RegionFile.SECTOR_BYTES).fill(0),0,RegionFile.SECTOR_BYTES,0);
+      await this.file.write(new Buffer(RegionFile.SECTOR_BYTES).fill(0),0,RegionFile.SECTOR_BYTES,RegionFile.SECTOR_BYTES);
 
       this.sizeDelta += RegionFile.SECTOR_BYTES * 2;
     }
@@ -123,13 +123,17 @@ class RegionFile {
 
     const length=(await this.file.read(new Buffer(4),0,4,sectorNumber * RegionFile.SECTOR_BYTES))[1].readUInt32BE(0);
 
+    if(length<=1) {
+      throw new Error("wrong length "+length);
+    }
+
     if (length > RegionFile.SECTOR_BYTES * numSectors) {
       RegionFile.debug("READ"+ x+","+ z+ " invalid length: " + length + " > 4096 * " + numSectors);
       return null;
     }
 
     const version = (await this.file.read(new Buffer(1),0,1,sectorNumber * RegionFile.SECTOR_BYTES+4))[1].readUInt8(0);
-    const data = (await this.file.read(new Buffer(length-1),0,length-1,sectorNumber * RegionFile.SECTOR_BYTES+5))[1];
+    const data = (await this.file.read(new Buffer(length - 1), 0, length - 1, sectorNumber * RegionFile.SECTOR_BYTES + 5))[1];
 
     let decompress;
     if(version == RegionFile.VERSION_GZIP) // gzip
@@ -205,6 +209,8 @@ class RegionFile {
          */
 
         RegionFile.debug("SAVE "+ x+", "+z+", "+ length+ " grow");
+
+        sectorNumber = this.sectorFree.length;
         let stat=await fs.stat(this.fileName);
         let toGrow=sectorsNeeded*RegionFile.SECTOR_BYTES;
         await this.file.write((new Buffer(toGrow)).fill(0),0,toGrow,stat.size);
