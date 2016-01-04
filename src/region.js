@@ -221,6 +221,7 @@ class RegionFile {
         let stat=await fs.stat(this.fileName);
         let toGrow=sectorsNeeded*RegionFile.SECTOR_BYTES;
         await this.file.write(createFilledBuffer(toGrow,0),0,toGrow,stat.size);
+        for (let i = 0; i < sectorsNeeded; ++i) this.sectorFree.push(false);
         this.sizeDelta += RegionFile.SECTOR_BYTES * sectorsNeeded;
 
         await this.writeChunk(sectorNumber, data, length);
@@ -228,6 +229,7 @@ class RegionFile {
       }
     }
     await this.setTimestamp(x, z, Math.floor (Date.now() / 1000));
+    RegionFile.debug("FINISH SAVE "+ x+", "+z+", "+ length);
   }
 
   async writeChunk(sectorNumber, data, length)

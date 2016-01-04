@@ -35,22 +35,12 @@ describe("saving and loading works",function(){
   let chunks={};
   let regionPath='world/testRegion';
 
-  before((cb) => {
+  before(() => {
     chunks=generateCube(size).map(({chunkX,chunkZ}) => ({chunkX,chunkZ,chunk:generateRandomChunk(chunkX,chunkZ)}));
-    mkdirp(regionPath,cb);
   });
 
-  after(cb => {
-    rimraf(regionPath, cb);
-  });
-
-
-  it("save the world",async ()=> {
-    const anvil=new Anvil("world/testRegion");
-    await Promise.all(chunks.map(({chunkX,chunkZ,chunk}) => anvil.save(chunkX,chunkZ,chunk)));
-  });
-
-  it("load the world correctly",async ()=> {
+  async function loadInParallel()
+  {
     const anvil=new Anvil("world/testRegion");
     await Promise.all(
       chunks
@@ -61,5 +51,27 @@ describe("saving and loading works",function(){
           assert(bufferEqual(originalChunk.dump(),loadedChunk.dump()));
         })
     );
+  }
+
+  describe("in sequence",()=> {
+    before((cb) => mkdirp(regionPath,cb));
+    after(cb => rimraf(regionPath, cb));
+    it("save the world in sequence",async ()=> {
+      const anvil=new Anvil("world/testRegion");
+      await chunks.reduce(async (acc,{chunkX,chunkZ,chunk}) => {await acc; await anvil.save(chunkX,chunkZ,chunk)},Promise.resolve());
+    });
+
+    it("load the world correctly in parallel",loadInParallel);
   });
+
+  describe("in parallel",()=> {
+    before((cb) => mkdirp(regionPath,cb));
+    after(cb => rimraf(regionPath, cb));
+    it("save the world in parallel",async ()=> {
+      const anvil=new Anvil("world/testRegion");
+      await Promise.all(chunks.map(({chunkX,chunkZ,chunk}) => anvil.save(chunkX,chunkZ,chunk)));
+    });
+
+    it("load the world correctly in parallel",loadInParallel);
+  })
 });
