@@ -31,12 +31,20 @@ class RegionFile {
   sectorFree;
   sizeDelta;
   lastModified = 0;
+  ini;
+  q=Promise.resolve();
 
   constructor(path) {
     this.fileName = path;
   }
 
   async initialize()
+  {
+    this.ini=this._initialize();
+    await this.ini;
+  }
+
+  async _initialize()
   {
     this.offsets = [];
     this.chunkTimestamps = [];
@@ -110,6 +118,7 @@ class RegionFile {
    * the chunk is not found or an error occurs
    */
   async read(x, z) {
+    await this.ini;
     if (RegionFile.outOfBounds(x, z)) {
       throw new Error("READ "+ x+","+ z+ " out of bounds");
     }
@@ -153,9 +162,17 @@ class RegionFile {
     return await decompress(data).then(nbt.parseUncompressed);
   }
 
-  /* write a chunk at (x,z) with length bytes of data to disk */
-  async write(x, z, nbtData)
+
+  async write(x,z,nbtData)
   {
+    this.q=this.q.then(() => this._write(x,z,nbtData));
+    await this.q;
+  }
+
+  /* write a chunk at (x,z) with length bytes of data to disk */
+  async _write(x, z, nbtData)
+  {
+    await this.ini;
     const uncompressed_data=nbt.writeUncompressed(nbtData);
     const data=await promisify(zlib.deflate)(uncompressed_data);
 
