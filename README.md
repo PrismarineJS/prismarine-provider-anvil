@@ -5,8 +5,30 @@ Anvil Storage Provider implementation.
 
 ## Usage
 
-See [example.js](example.js)
+See [example_read.js](example_read.js) and [example_write.js](example_write.js) 
 
+## API
+
+### Anvil
+
+#### Anvil(path)
+Build an anvil : provide loading and saving of chunks in all regions in `path`
+
+#### Anvil.save(x,z,chunk)
+
+Take a prismarine chunk and save it. Returns a promise.
+
+#### Anvil.saveRaw(x,z,nbt)
+
+Take a nbt object and save it. Returns a promise.
+
+#### Anvil.load(x,z)
+
+Returns a promise containing the prismarine chunk at x,z or null if that chunk isn't saved.
+
+#### Anvil.loadRaw(x,z)
+
+Returns a promise containing the nbt at x,z or null if that nbt isn't saved.
 
 ## History
 
