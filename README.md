@@ -32,6 +32,10 @@ Returns a promise containing the nbt at x,z or null if that nbt isn't saved.
 
 ## History
 
+### 0.1.0
+
+* completely reimplement to provide full functionality :  loading and saving, and all the data in chunks
+
 ### 0.0.2
 
 * use up to date dependencies in minecraft-region
