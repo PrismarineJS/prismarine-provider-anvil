@@ -3,11 +3,11 @@ const {nbtChunkToPrismarineChunk,prismarineChunkToNbt}=require('./chunk');
 
 class Anvil {
 
-  regions;
+  regions={};
+  regionsQueues={};
 
   constructor(path) {
     this.path=path;
-    this.regions={};
   }
 
   regionFileName(x,z)
@@ -49,6 +49,13 @@ class Anvil {
   }
 
   async saveRaw(x,z,nbt) {
+    const name=this.regionFileName(x,z);
+    if(!this.regionsQueues[name]) this.regionsQueues[name]=Promise.resolve();
+    this.regionsQueues[name]=this.regionsQueues[name].then(() => this._saveRaw(x,z,nbt));
+    return this.regionsQueues[name];
+  }
+
+  async _saveRaw(x,z,nbt) {
     let region=await this.getRegion(x,z);
     await region.write(x & 0x1F,z & 0x1F,nbt);
   }

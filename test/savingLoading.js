@@ -47,7 +47,7 @@ describe("saving and loading works",function(){
         .map(async ({chunkX,chunkZ,chunk}) => {
           const originalChunk=chunk;
           const loadedChunk=await anvil.load(chunkX,chunkZ);
-          assert.equal(originalChunk.getBlockType(new Vec3(0,50,0)),loadedChunk.getBlockType(new Vec3(0,50,0)),"wrong block type at 0,50,0");
+          assert.equal(originalChunk.getBlockType(new Vec3(0,50,0)),loadedChunk.getBlockType(new Vec3(0,50,0)),"wrong block type at 0,50,0 at chunk "+chunkX+", "+chunkZ);
           assert(bufferEqual(originalChunk.dump(),loadedChunk.dump()));
         })
     );
