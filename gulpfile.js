@@ -25,8 +25,15 @@ gulp.task('compile', function() {
     .pipe(gulp.dest('dist/'));
 });
 
+
+gulp.task('transpile_test', function() {
+  gulp.src('test/*.js')
+    .pipe(babel(options))
+    .pipe(gulp.dest('distTest/'));
+});
+
 gulp.task('watch', function() {
   return gulp.watch('src/**/*.js', ['compile']);
 });
 
-gulp.task('default', ['compile']);
+gulp.task('default', ['compile','transpile_test']);
