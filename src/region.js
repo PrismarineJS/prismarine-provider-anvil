@@ -1,11 +1,10 @@
-import {fs} from 'node-promise-es6';
+import {fs,promisify} from 'node-promise-es6';
 import nbt from 'prismarine-nbt';
 import zlib from 'zlib';
-import promisify from 'es6-promisify';
-import fdSlicer from 'fd-slicer';
 
-fdSlicer.FdSlicer.prototype.read=promisify(fdSlicer.FdSlicer.prototype.read);
-fdSlicer.FdSlicer.prototype.write=promisify(fdSlicer.FdSlicer.prototype.write);
+const deflateAsync=promisify(zlib.deflate);
+const gunzipAsync=promisify(zlib.gunzip);
+const inflateAsync=promisify(zlib.inflate);
 
 function createFilledBuffer(size,value)
 {
@@ -153,9 +152,9 @@ class RegionFile {
 
     let decompress;
     if(version == RegionFile.VERSION_GZIP) // gzip
-      decompress = promisify(zlib.gunzip);
+      decompress = gunzipAsync;
     else if(version == RegionFile.VERSION_DEFLATE) // zlib
-      decompress = promisify(zlib.inflate);
+      decompress = inflateAsync;
     else
       throw new Error("READ "+ x+","+ z+ " unknown version " + version);
 
@@ -174,7 +173,7 @@ class RegionFile {
   {
     await this.ini;
     const uncompressed_data=nbt.writeUncompressed(nbtData);
-    const data=await promisify(zlib.deflate)(uncompressed_data);
+    const data=await deflateAsync(uncompressed_data);
 
     let length=data.length+1;
     let offset = this.getOffset(x, z);
