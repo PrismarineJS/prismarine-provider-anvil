@@ -42,6 +42,10 @@ Writes a level.dat file
 
 ## History
 
+### 0.2.0
+
+* add level.dat loading/saving
+
 ### 0.1.0
 
 * completely reimplement to provide full functionality :  loading and saving, and all the data in chunks
