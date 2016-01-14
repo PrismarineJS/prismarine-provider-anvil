@@ -1,4 +1,4 @@
-var Anvil=require("./").Anvil;
+var Anvil=require("./../index").Anvil;
 var Vec3 = require("vec3");
 
 var anvil = new Anvil(process.argv[2] ? process.argv[2] : "world/lttp");

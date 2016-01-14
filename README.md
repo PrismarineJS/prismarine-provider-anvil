@@ -5,7 +5,7 @@ Anvil Storage Provider implementation.
 
 ## Usage
 
-See [example_read.js](example_read.js) and [example_write.js](example_write.js) 
+See [examples](examples)
 
 ## API
 
@@ -29,6 +29,16 @@ Returns a promise containing the prismarine chunk at x,z or null if that chunk i
 #### Anvil.loadRaw(x,z)
 
 Returns a promise containing the nbt at x,z or null if that nbt isn't saved.
+
+### level
+
+#### level.readLevel(path)
+
+Reads a level.dat file
+
+#### level.writeLevel(path,value)
+
+Writes a level.dat file
 
 ## History
 

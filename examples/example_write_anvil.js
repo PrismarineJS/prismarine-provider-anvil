@@ -1,4 +1,4 @@
-var Anvil=require("./").Anvil;
+var Anvil=require("./../index").Anvil;
 var Vec3 = require("vec3");
 var Chunk = require('prismarine-chunk')("1.8");
 

@@ -1,4 +1,5 @@
 module.exports={
   Anvil:require("./anvil"),
-  chunk:require("./chunk")
+  chunk:require("./chunk"),
+  level:require("./level")
 };
