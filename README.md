@@ -42,6 +42,11 @@ Writes a level.dat file
 
 ## History
 
+### 0.2.1
+
+* update prismarine-chunk
+* use nbt.simplify
+
 ### 0.2.0
 
 * add level.dat loading/saving
