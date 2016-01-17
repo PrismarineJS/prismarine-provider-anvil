@@ -1,5 +1,4 @@
 import nbt from 'prismarine-nbt';
-import {getNbtValue} from './chunk';
 import {fs,promisify} from 'node-promise-es6';
 
 
@@ -14,13 +13,11 @@ const parseAsync=promisify(nbt.parse);
 const writeAsync=promisify(write);
 
 
-
-
 export async function readLevel(path)
 {
   const content=await fs.readFile(path);
-  const nbt= await parseAsync(content);
-  return getNbtValue(nbt).Data;
+  const dnbt= await parseAsync(content);
+  return nbt.simplify(dnbt).Data;
 }
 
 

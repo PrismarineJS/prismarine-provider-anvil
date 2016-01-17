@@ -1,31 +1,14 @@
 var Chunk = require("prismarine-chunk")("1.8");
 var Vec3 = require("vec3").Vec3;
 var { readUInt4LE, writeUInt4LE } = require('uint4');
-
-function getNbtValue(data)
-{
-  function transform(value,type)
-  {
-    if(type=="compound") {
-      return Object.keys(value).reduce((acc,key) => {
-        acc[key]=getNbtValue(value[key]);
-        return acc;
-      },{});
-    }
-    if(type=="list") {
-      return value.value.map(v => transform(v,value.type));
-    }
-    return value;
-  }
-  return transform(data.value,data.type);
-}
+import nbt from 'prismarine-nbt';
 
 function nbtChunkToPrismarineChunk(data)
 {
-  let nbt=getNbtValue(data);
+  let nbtd=nbt.simplify(data);
   const chunk=new Chunk();
-  readSections(chunk,nbt.Level.Sections);
-  readBiomes(chunk,nbt.Level.Biomes);
+  readSections(chunk,nbtd.Level.Sections);
+  readBiomes(chunk,nbtd.Level.Biomes);
   return chunk;
 }
 
@@ -222,4 +205,4 @@ function writeBiomes(chunk)
 
 
 
-module.exports={getNbtValue,nbtChunkToPrismarineChunk,prismarineChunkToNbt};
+module.exports={nbtChunkToPrismarineChunk,prismarineChunkToNbt};
