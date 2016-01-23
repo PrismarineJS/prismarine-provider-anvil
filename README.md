@@ -42,6 +42,10 @@ Writes a level.dat file
 
 ## History
 
+### 0.2.2
+
+* fix small bug with regionFileName call
+
 ### 0.2.1
 
 * update prismarine-chunk
