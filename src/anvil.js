@@ -19,7 +19,7 @@ class Anvil {
     if (typeof x !== "number" || typeof z !== "number") {
       throw "Missing x or z arguments."
     }
-    var name=this.regionFileName(this.path,x,z);
+    var name=this.regionFileName(x,z);
     let region = this.regions[name];
     if(region== undefined) {
       region = new RegionFile(name);
