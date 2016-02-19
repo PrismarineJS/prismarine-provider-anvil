@@ -42,6 +42,10 @@ Writes a level.dat file
 
 ## History
 
+### 1.0.0
+
+* bump dependencies
+
 ### 0.2.2
 
 * fix small bug with regionFileName call
