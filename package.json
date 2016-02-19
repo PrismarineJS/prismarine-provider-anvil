@@ -31,7 +31,7 @@
     "gulp-plumber": "^1.0.1",
     "gulp-sourcemaps": "^1.3.0",
     "intelli-espower-loader": "^1.0.0",
-    "minecraft-data": "0.7.0",
+    "minecraft-data": "^1.0.0",
     "mocha": "^2.1.0",
     "range": "0.0.3",
     "flatmap": "0.0.3",
@@ -41,8 +41,8 @@
   "dependencies": {
     "babel-runtime": "^5.4.4",
     "node-promise-es6": "^0.2.3",
-    "prismarine-chunk": "^0.3.2",
-    "prismarine-nbt": "^0.2.0",
+    "prismarine-chunk": "^1.0.0",
+    "prismarine-nbt": "^0.2.1",
     "uint4": "^0.1.2",
     "vec3": "^0.1.3"
   }
