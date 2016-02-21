@@ -3,8 +3,8 @@ var gulp = require('gulp');
 var plumber = require('gulp-plumber');
 var babel = require('gulp-babel');
 var options = {
-  stage: 0, // Dat ES7 goodness
-  optional: ["runtime"]
+  presets: ['babel-preset-stage-0','es2015'],
+  plugins:['transform-runtime','transform-class-properties']
 };
 
 var sourcemaps = require('gulp-sourcemaps');
@@ -25,10 +25,19 @@ gulp.task('compile', function() {
     .pipe(gulp.dest('dist/'));
 });
 
-
-gulp.task('transpile_test', function() {
-  gulp.src('test/*.js')
+gulp.task('compileTest', function() {
+  return gulp
+    .src('test/**/*.js')
+    .pipe(plumber({
+      errorHandler: function(err) {
+        console.error(err.stack);
+        this.emit('end');
+      }
+    }))
+    .pipe(sourcemaps.init())
     .pipe(babel(options))
+    .pipe(plumber.stop())
+    .pipe(sourcemaps.write('maps/'))
     .pipe(gulp.dest('distTest/'));
 });
 
@@ -36,4 +45,4 @@ gulp.task('watch', function() {
   return gulp.watch('src/**/*.js', ['compile']);
 });
 
-gulp.task('default', ['compile','transpile_test']);
+gulp.task('default', ['compile','compileTest']);
