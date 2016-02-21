@@ -42,6 +42,10 @@ Writes a level.dat file
 
 ## History
 
+### 1.0.1
+
+* update to babel6
+
 ### 1.0.0
 
 * bump dependencies
