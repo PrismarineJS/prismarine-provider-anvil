@@ -42,6 +42,10 @@ Writes a level.dat file
 
 ## History
 
+### 1.1.0
+
+* update dependencies, fix #10 (prismarine-nbt nbt.simplify was broken)
+
 ### 1.0.1
 
 * update to babel6
