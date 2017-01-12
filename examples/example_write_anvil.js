@@ -6,7 +6,7 @@ var chunkF = new Anvil(process.argv[2] ? process.argv[2] : __dirname+"/../world/
 
 var c=chunkF.saveRaw(-32,0,{"name":"","type":"compound","value":{}});
 
-c.then(function(){
+var p=c.then(function(){
   console.log("saved");
 })
 .catch(function(err){
@@ -25,7 +25,7 @@ for (var x = 0; x < 16;x++) {
   }
 }
 
-var d=chunkF.save(-32,0,chunk);
+var d= p.then(() => chunkF.save(-32,0,chunk));
 
 d.then(function(){
     console.log("saved");
