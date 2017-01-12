@@ -42,6 +42,10 @@ Writes a level.dat file
 
 ## History
 
+### 2.0.0
+
+* cross version support
+
 ### 1.1.0
 
 * update dependencies, fix #10 (prismarine-nbt nbt.simplify was broken)
