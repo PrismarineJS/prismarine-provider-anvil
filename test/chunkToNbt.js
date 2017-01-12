@@ -15,8 +15,8 @@ for (var x = 0; x < 16;x++) {
   }
 }
 
-var prismarineChunkToNbt=require('../').chunk.prismarineChunkToNbt;
-var nbtChunkToPrismarineChunk=require('../').chunk.nbtChunkToPrismarineChunk;
+var prismarineChunkToNbt=require('../').chunk("1.8").prismarineChunkToNbt;
+var nbtChunkToPrismarineChunk=require('../').chunk("1.8").nbtChunkToPrismarineChunk;
 
 describe("transform chunk to nbt",function(){
 
