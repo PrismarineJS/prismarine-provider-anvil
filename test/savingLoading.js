@@ -4,7 +4,7 @@ const bufferEqual = require('buffer-equal');
 const Chunk = require('prismarine-chunk')("1.8");
 const Vec3=require("vec3");
 const assert = require('assert');
-const Anvil=require('../').Anvil;
+const Anvil=require('../').Anvil("1.8");
 const mkdirp=require('mkdirp');
 const rimraf=require('rimraf');
 

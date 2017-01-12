@@ -1,8 +1,8 @@
-var Anvil=require("./../index").Anvil;
+var Anvil=require("./../index").Anvil("1.8");
 var Vec3 = require("vec3");
 var Chunk = require('prismarine-chunk')("1.8");
 
-var chunkF = new Anvil(process.argv[2] ? process.argv[2] : "world/lttp");
+var chunkF = new Anvil(process.argv[2] ? process.argv[2] : __dirname+"/../world/lttp");
 
 var c=chunkF.saveRaw(-32,0,{"name":"","type":"compound","value":{}});
 

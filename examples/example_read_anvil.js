@@ -1,7 +1,7 @@
-var Anvil=require("./../index").Anvil;
+var Anvil=require("./../index").Anvil("1.8");
 var Vec3 = require("vec3");
 
-var anvil = new Anvil(process.argv[2] ? process.argv[2] : "world/lttp");
+var anvil = new Anvil(process.argv[2] ? process.argv[2] : __dirname+"/../world/lttp");
 
 var d=anvil.load(-32,0);
 

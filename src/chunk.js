@@ -1,4 +1,5 @@
-var Chunk = require("prismarine-chunk")("1.8");
+var Chunk;
+
 var Vec3 = require("vec3").Vec3;
 var { readUInt4LE, writeUInt4LE } = require('uint4');
 import nbt from 'prismarine-nbt';
@@ -204,5 +205,10 @@ function writeBiomes(chunk)
 }
 
 
+function loader(mcVersion) {
+  Chunk = require("prismarine-chunk")(mcVersion);
+  return {nbtChunkToPrismarineChunk,prismarineChunkToNbt};
+}
 
-module.exports={nbtChunkToPrismarineChunk,prismarineChunkToNbt};
+
+module.exports = loader;
