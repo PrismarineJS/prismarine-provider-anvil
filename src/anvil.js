@@ -1,5 +1,12 @@
 const RegionFile=require('./region');
-const {nbtChunkToPrismarineChunk,prismarineChunkToNbt}=require('./chunk');
+let nbtChunkToPrismarineChunk,prismarineChunkToNbt;
+
+module.exports = loader;
+
+function loader(mcVersion) {
+  ({nbtChunkToPrismarineChunk,prismarineChunkToNbt}=require('./chunk')(mcVersion));
+  return Anvil;
+}
 
 class Anvil {
 
@@ -52,5 +59,3 @@ class Anvil {
     await region.write(x & 0x1F,z & 0x1F,nbt);
   }
 }
-
-module.exports=Anvil;
