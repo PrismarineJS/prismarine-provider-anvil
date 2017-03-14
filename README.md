@@ -1,4 +1,6 @@
 # prismarine-provider-anvil
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/PrismarineJS/prismarine-provider-anvil.svg)](https://greenkeeper.io/)
 [![NPM version](https://img.shields.io/npm/v/prismarine-provider-anvil.svg)](http://npmjs.com/package/prismarine-provider-anvil)
 
 Anvil Storage Provider implementation.
