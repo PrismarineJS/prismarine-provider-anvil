@@ -1,5 +1,9 @@
 const Chunk = require('prismarine-chunk')('1.8')
 const Vec3 = require('vec3')
+<<<<<<< HEAD
+=======
+const bufferEqual = require('buffer-equal')
+>>>>>>> 79950d1a916d4e39e3aad794677d75da12b635b0
 const assert = require('assert')
 
 const chunk = new Chunk()
@@ -38,7 +42,10 @@ describe('transform chunk to nbt', function () {
     // console.log(JSON.stringify(nbt.value.Level.value.Sections.value.value[3].Blocks.value[16*(16*2)],null,2));
   })
 
+<<<<<<< HEAD
   const bufferEqual = require('buffer-equal')
+=======
+>>>>>>> 79950d1a916d4e39e3aad794677d75da12b635b0
   it('has internal consistency', function () {
     var reChunk = nbtChunkToPrismarineChunk(nbt)
     assert.equal(reChunk.getBlockType(new Vec3(0, 50, 0)), 2, 'wrong block type at 0,50,0')
