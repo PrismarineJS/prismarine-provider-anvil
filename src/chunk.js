@@ -73,11 +73,7 @@ function indexToPos (index, sectionY) {
 }
 
 function readBlocks (chunk, sectionY, blocks) {
-<<<<<<< HEAD
   blocks = Buffer.from(blocks)
-=======
-  blocks = Buffer.alloc(blocks)
->>>>>>> 79950d1a916d4e39e3aad794677d75da12b635b0
   for (let index = 0; index < blocks.length; index++) {
     const blockType = blocks.readUInt8(index)
     const pos = indexToPos(index, sectionY)
@@ -107,11 +103,7 @@ function writeBlocks (chunk, sectionY) {
 }
 
 function readData (chunk, sectionY, metadata) {
-<<<<<<< HEAD
   metadata = Buffer.from(metadata)
-=======
-  metadata = Buffer.alloc(metadata)
->>>>>>> 79950d1a916d4e39e3aad794677d75da12b635b0
   for (let index = 0; index < metadata.length; index += 0.5) {
     const meta = readUInt4LE(metadata, index)
     const pos = indexToPos(index * 2, sectionY)
@@ -133,11 +125,7 @@ function writeData (chunk, sectionY) {
 }
 
 function readBlockLight (chunk, sectionY, blockLights) {
-<<<<<<< HEAD
   blockLights = Buffer.from(blockLights)
-=======
-  blockLights = Buffer.alloc(blockLights)
->>>>>>> 79950d1a916d4e39e3aad794677d75da12b635b0
   for (let index = 0; index < blockLights.length; index += 0.5) {
     const blockLight = readUInt4LE(blockLights, index)
     const pos = indexToPos(index * 2, sectionY)
@@ -159,11 +147,7 @@ function writeBlockLight (chunk, sectionY) {
 }
 
 function readSkyLight (chunk, sectionY, skylights) {
-<<<<<<< HEAD
   skylights = Buffer.from(skylights)
-=======
-  skylights = Buffer.alloc(skylights)
->>>>>>> 79950d1a916d4e39e3aad794677d75da12b635b0
   for (let index = 0; index < skylights.length; index += 0.5) {
     const skylight = readUInt4LE(skylights, index)
     const pos = indexToPos(index * 2, sectionY)
@@ -185,11 +169,7 @@ function writeSkyLight (chunk, sectionY) {
 }
 
 function readBiomes (chunk, biomes) {
-<<<<<<< HEAD
   biomes = Buffer.from(biomes)
-=======
-  biomes = Buffer.alloc(biomes)
->>>>>>> 79950d1a916d4e39e3aad794677d75da12b635b0
   for (let index = 0; index < biomes.length; index++) {
     const biome = biomes.readUInt8(index)
     const z = index >> 4
