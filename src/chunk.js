@@ -4,10 +4,10 @@ var Vec3 = require("vec3").Vec3;
 var { readUInt4LE, writeUInt4LE } = require('uint4');
 import nbt from 'prismarine-nbt';
 
-function nbtChunkToPrismarineChunk(data)
+function nbtChunkToPrismarineChunk(data, chunk)
 {
   let nbtd=nbt.simplify(data);
-  const chunk=new Chunk();
+  chunk = chunk || new Chunk();
   readSections(chunk,nbtd.Level.Sections);
   readBiomes(chunk,nbtd.Level.Biomes);
   return chunk;

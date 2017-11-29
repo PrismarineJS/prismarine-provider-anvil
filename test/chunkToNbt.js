@@ -18,6 +18,29 @@ for (var x = 0; x < 16;x++) {
 var prismarineChunkToNbt=require('../').chunk("1.8").prismarineChunkToNbt;
 var nbtChunkToPrismarineChunk=require('../').chunk("1.8").nbtChunkToPrismarineChunk;
 
+var MockChunk = function() {};
+MockChunk.prototype = {
+  calledFunctions: {},
+  recordCall: function(functionName){
+    if (!this.calledFunctions[functionName]) {
+      this.calledFunctions[functionName] = 1;
+    }
+    else {
+      this.calledFunctions[functionName]++;
+    }
+  },
+  setBlockType: function(){this.recordCall('setBlockType')},
+  getBlockType: function(){this.recordCall('getBlockType')},
+  setBlockData: function(){this.recordCall('setBlockData')},
+  getBlockData: function(){this.recordCall('getBlockData')},
+  setBlockLight: function(){this.recordCall('setBlockLight')},
+  getBlockLight: function(){this.recordCall('getBlockLight')},
+  setSkyLight: function(){this.recordCall('setSkyLight')},
+  getSkyLight: function(){this.recordCall('getSkyLight')},
+  setBiome: function(){this.recordCall('setBiome')},
+  getBiome: function(){this.recordCall('getBiome')}
+};
+
 describe("transform chunk to nbt",function(){
 
   var nbt=prismarineChunkToNbt(chunk);
@@ -45,5 +68,12 @@ describe("transform chunk to nbt",function(){
     assert.equal(reChunk.getBlockType(new Vec3(0,50,0)),2,"wrong block type at 0,50,0");
     assert.equal(reChunk.getSkyLight(new Vec3(0,50,0)),15);
     assert(bufferEqual(reChunk.dump(),chunk.dump()))
+  });
+
+  it('can read into a provided chunk object', function () {
+    var readChunk = new MockChunk();
+    var nbt2=prismarineChunkToNbt(chunk);
+    readChunk = nbtChunkToPrismarineChunk(nbt2, readChunk);
+    assert.ok(readChunk.calledFunctions.setBlockType > 0, 'custom chunk functions have been called');
   });
 });
