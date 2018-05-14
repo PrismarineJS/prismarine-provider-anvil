@@ -1,5 +1,6 @@
 # prismarine-provider-anvil
 [![NPM version](https://img.shields.io/npm/v/prismarine-provider-anvil.svg)](http://npmjs.com/package/prismarine-provider-anvil)
+[![Build Status](https://circleci.com/gh/PrismarineJS/prismarine-provider-anvil/tree/master.svg?style=shield)](https://circleci.com/gh/PrismarineJS/prismarine-provider-anvil/tree/master)
 
 Anvil Storage Provider implementation.
 
