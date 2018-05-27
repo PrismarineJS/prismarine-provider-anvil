@@ -43,6 +43,10 @@ Writes a level.dat file
 
 ## History
 
+### 2.1.0
+
+* standardjs
+
 ### 2.0.0
 
 * cross version support
