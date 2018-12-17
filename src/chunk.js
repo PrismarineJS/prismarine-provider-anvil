@@ -8,9 +8,10 @@ const { readUInt4LE, writeUInt4LE } = require('uint4')
 function nbtChunkToPrismarineChunk (data) {
   let nbtd = nbt.simplify(data)
   const chunk = new Chunk()
-  readSections(chunk, nbtd.Level.Sections)
+  const mask = { bitMap: 0 }
+  readSections(chunk, mask, nbtd.Level.Sections)
   readBiomes(chunk, nbtd.Level.Biomes)
-  return chunk
+  return { chunk,...mask }
 }
 
 function prismarineChunkToNbt (chunk) {
@@ -29,8 +30,8 @@ function prismarineChunkToNbt (chunk) {
   }
 }
 
-function readSections (chunk, sections) {
-  sections.forEach(section => readSection(chunk, section))
+function readSections (chunk, mask, sections) {
+  sections.forEach(section => readSection(chunk, mask, section))
 }
 
 function writeSections (chunk) {
@@ -46,8 +47,8 @@ function writeSections (chunk) {
   }
 }
 
-function readSection (chunk, {Y, Blocks, Add, Data, BlockLight, SkyLight}) {
-  readBlocks(chunk, Y, Blocks)
+function readSection (chunk, mask, {Y, Blocks, Add, Data, BlockLight, SkyLight}) {
+  readBlocks(chunk, mask, Y, Blocks)
   readSkyLight(chunk, Y, SkyLight)
   readBlockLight(chunk, Y, BlockLight)
   readData(chunk, Y, Data)
@@ -73,13 +74,19 @@ function indexToPos (index, sectionY) {
   return new Vec3(x, sectionY * 16 + y, z)
 }
 
-function readBlocks (chunk, sectionY, blocks) {
+function readBlocks (chunk, mask, sectionY, blocks) {
   blocks = Buffer.from(blocks)
   for (let index = 0; index < blocks.length; index++) {
     const blockType = blocks.readUInt8(index)
     const pos = indexToPos(index, sectionY)
+    if(blockType) updateBitMap(mask, pos.y) // if not "empty"
     chunk.setBlockType(pos, blockType)
   }
+}
+
+function updateBitMap(mask, y) {
+  y = Math.floor(y / 16)
+  mask.bitMap |= 1 << y
 }
 
 function toSignedArray (buffer) {

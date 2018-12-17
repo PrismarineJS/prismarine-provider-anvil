@@ -37,7 +37,8 @@ class Anvil {
   async load (x, z) {
     const data = await this.loadRaw(x, z)
     if (data == null) { return null }
-    return nbtChunkToPrismarineChunk(data)
+    const { chunk, bitMap } = nbtChunkToPrismarineChunk(data) // TODO: think about the best way to export the bitMap
+    return chunk
   }
 
   async loadRaw (x, z) {
