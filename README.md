@@ -23,9 +23,14 @@ Take a prismarine chunk and save it. Returns a promise.
 
 Take a nbt object and save it. Returns a promise.
 
-#### Anvil.load(x,z)
+#### Anvil.load(x,z,withBitMap?)
 
 Returns a promise containing the prismarine chunk at x,z or null if that chunk isn't saved.
+Pass an optional third argument to return the corresponding bitmap with the chunk
+```js
+const chunk = Anvil.load(x, z)
+const { chunk, bitMap } = Anvil.load(x, z, true)
+```
 
 #### Anvil.loadRaw(x,z)
 
