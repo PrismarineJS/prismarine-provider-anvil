@@ -34,11 +34,11 @@ class Anvil {
   }
 
   // returns a Promise. Resolve a Chunk object or reject if it hasn’t been generated
-  async load (x, z) {
+  async load (x, z, withBitMap = false) {
     const data = await this.loadRaw(x, z)
     if (data == null) { return null }
-    const { chunk, bitMap } = nbtChunkToPrismarineChunk(data) // TODO: think about the best way to export the bitMap
-    return chunk
+    const { chunk, bitMap } = nbtChunkToPrismarineChunk(data)
+    return withBitMap ? { chunk, bitMap } : chunk
   }
 
   async loadRaw (x, z) {
