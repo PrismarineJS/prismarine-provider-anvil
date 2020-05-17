@@ -5,7 +5,7 @@ const path = require('path')
 
 const chunkF = new Anvil(process.argv[2] ? process.argv[2] : path.join(__dirname, '/../world/lttp'))
 
-const c = chunkF.saveRaw(-32, 0, {'name': '', 'type': 'compound', 'value': {}})
+const c = chunkF.saveRaw(-32, 0, { name: '', type: 'compound', value: {} })
 
 const p = c.then(function () {
   console.log('saved')

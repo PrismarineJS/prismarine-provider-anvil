@@ -29,25 +29,25 @@ describe('saving and loading works', function () {
   }
 
   function generateCube (size) {
-    return flatMap(range(0, size), (chunkX) => range(0, size).map(chunkZ => ({chunkX, chunkZ})))
+    return flatMap(range(0, size), (chunkX) => range(0, size).map(chunkZ => ({ chunkX, chunkZ })))
   }
 
-  let size = 3
+  const size = 3
   let chunks = {}
-  let regionPath = 'world/testRegion'
+  const regionPath = 'world/testRegion'
 
   before(() => {
-    chunks = generateCube(size).map(({chunkX, chunkZ}) => ({chunkX, chunkZ, chunk: generateRandomChunk(chunkX, chunkZ)}))
+    chunks = generateCube(size).map(({ chunkX, chunkZ }) => ({ chunkX, chunkZ, chunk: generateRandomChunk(chunkX, chunkZ) }))
   })
 
   async function loadInParallel () {
     const anvil = new Anvil('world/testRegion')
     await Promise.all(
       chunks
-        .map(async ({chunkX, chunkZ, chunk}) => {
+        .map(async ({ chunkX, chunkZ, chunk }) => {
           const originalChunk = chunk
           const loadedChunk = await anvil.load(chunkX, chunkZ)
-          assert.equal(originalChunk.getBlockType(new Vec3(0, 50, 0)), loadedChunk.getBlockType(new Vec3(0, 50, 0)), 'wrong block type at 0,50,0 at chunk ' + chunkX + ', ' + chunkZ)
+          assert.strictEqual(originalChunk.getBlockType(new Vec3(0, 50, 0)), loadedChunk.getBlockType(new Vec3(0, 50, 0)), 'wrong block type at 0,50,0 at chunk ' + chunkX + ', ' + chunkZ)
           assert(bufferEqual(originalChunk.dump(), loadedChunk.dump()))
         })
     )
@@ -58,7 +58,7 @@ describe('saving and loading works', function () {
     after(cb => rimraf(regionPath, cb))
     it('save the world in sequence', async () => {
       const anvil = new Anvil('world/testRegion')
-      await chunks.reduce(async (acc, {chunkX, chunkZ, chunk}) => { await acc; await anvil.save(chunkX, chunkZ, chunk) }, Promise.resolve())
+      await chunks.reduce(async (acc, { chunkX, chunkZ, chunk }) => { await acc; await anvil.save(chunkX, chunkZ, chunk) }, Promise.resolve())
     })
 
     it('load the world correctly in parallel', loadInParallel)
@@ -69,7 +69,7 @@ describe('saving and loading works', function () {
     after(cb => rimraf(regionPath, cb))
     it('save the world in parallel', async () => {
       const anvil = new Anvil('world/testRegion')
-      await Promise.all(chunks.map(({chunkX, chunkZ, chunk}) => anvil.save(chunkX, chunkZ, chunk)))
+      await Promise.all(chunks.map(({ chunkX, chunkZ, chunk }) => anvil.save(chunkX, chunkZ, chunk)))
     })
 
     it('load the world correctly in parallel', loadInParallel)

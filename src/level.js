@@ -1,5 +1,5 @@
 const nbt = require('prismarine-nbt')
-const {fs, promisify} = require('node-promise-es6')
+const { fs, promisify } = require('node-promise-es6')
 const zlib = require('zlib')
 
 function write (nbtData, cb) {
@@ -10,7 +10,7 @@ function write (nbtData, cb) {
 const parseAsync = promisify(nbt.parse)
 const writeAsync = promisify(write)
 
-module.exports = {readLevel, writeLevel}
+module.exports = { readLevel, writeLevel }
 
 async function readLevel (path) {
   const content = await fs.readFile(path)
@@ -20,15 +20,15 @@ async function readLevel (path) {
 
 async function writeLevel (path, value) {
   const nbt = {
-    'type': 'compound',
-    'name': '',
-    'value': {
-      'Data': {
-        'type': 'compound',
-        'value': {
-          'RandomSeed': {
-            'type': 'long',
-            'value': value['RandomSeed']
+    type: 'compound',
+    name: '',
+    value: {
+      Data: {
+        type: 'compound',
+        value: {
+          RandomSeed: {
+            type: 'long',
+            value: value.RandomSeed
           }
         }
       }

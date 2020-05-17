@@ -4,7 +4,7 @@ let nbtChunkToPrismarineChunk, prismarineChunkToNbt
 module.exports = loader
 
 function loader (mcVersion) {
-  ({nbtChunkToPrismarineChunk, prismarineChunkToNbt} = require('./chunk')(mcVersion))
+  ({ nbtChunkToPrismarineChunk, prismarineChunkToNbt } = require('./chunk')(mcVersion))
   return Anvil
 }
 
@@ -51,7 +51,7 @@ class Anvil {
   }
 
   async saveRaw (x, z, nbt) {
-    let region = await this.getRegion(x, z)
+    const region = await this.getRegion(x, z)
     await region.write(x & 0x1F, z & 0x1F, nbt)
   }
 }

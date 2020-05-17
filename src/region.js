@@ -1,4 +1,4 @@
-const {fs, promisify} = require('node-promise-es6')
+const { fs, promisify } = require('node-promise-es6')
 const nbt = require('prismarine-nbt')
 const zlib = require('zlib')
 
@@ -36,7 +36,7 @@ class RegionFile {
       this.file = await fs.open(this.fileName, 'w+')
     }
 
-    let stat = await fs.stat(this.fileName)
+    const stat = await fs.stat(this.fileName)
     if (stat.isFile()) {
       this.lastModified = stat.mtime
     }
@@ -67,7 +67,7 @@ class RegionFile {
 
     const offsets = (await fs.read(this.file, Buffer.alloc(RegionFile.SECTOR_BYTES), 0, RegionFile.SECTOR_BYTES, 0)).buffer
     for (let i = 0; i < RegionFile.SECTOR_INTS; ++i) {
-      let offset = offsets.readUInt32BE(i * 4)
+      const offset = offsets.readUInt32BE(i * 4)
       this.offsets[i] = offset
       if (offset !== 0 && (offset >> 8) + (offset & 0xFF) <= this.sectorFree.length) {
         for (let sectorNum = 0; sectorNum < (offset & 0xFF); ++sectorNum) {
@@ -150,11 +150,11 @@ class RegionFile {
     const uncompressedData = nbt.writeUncompressed(nbtData)
     const data = await deflateAsync(uncompressedData)
 
-    let length = data.length + 1
-    let offset = this.getOffset(x, z)
+    const length = data.length + 1
+    const offset = this.getOffset(x, z)
     let sectorNumber = offset >> 8
-    let sectorsAllocated = offset & 0xFF
-    let sectorsNeeded = Math.floor((length + RegionFile.CHUNK_HEADER_SIZE) / RegionFile.SECTOR_BYTES) + 1
+    const sectorsAllocated = offset & 0xFF
+    const sectorsNeeded = Math.floor((length + RegionFile.CHUNK_HEADER_SIZE) / RegionFile.SECTOR_BYTES) + 1
 
     // maximum chunk size is 1MB
     if (sectorsNeeded >= 256) {
@@ -209,8 +209,8 @@ class RegionFile {
         RegionFile.debug('SAVE ' + x + ', ' + z + ', ' + length + ' grow')
 
         sectorNumber = this.sectorFree.length
-        let stat = await fs.stat(this.fileName)
-        let toGrow = sectorsNeeded * RegionFile.SECTOR_BYTES
+        const stat = await fs.stat(this.fileName)
+        const toGrow = sectorsNeeded * RegionFile.SECTOR_BYTES
         await fs.write(this.file, createFilledBuffer(toGrow, 0), 0, toGrow, stat.size)
         for (let i = 0; i < sectorsNeeded; ++i) this.sectorFree.push(false)
         this.sizeDelta += RegionFile.SECTOR_BYTES * sectorsNeeded

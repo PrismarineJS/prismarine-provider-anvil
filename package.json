@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha test/",
     "pretest": "npm run lint",
-    "lint": "standard"
+    "lint": "standard",
+    "fix": "standard --fix"
   },
   "repository": {
     "type": "git",
@@ -33,7 +34,7 @@
     "mocha": "^3.1.2",
     "range": "0.0.3",
     "rimraf": "^2.5.0",
-    "standard": "^11.0.1"
+    "standard": "^14.3.4"
   },
   "dependencies": {
     "node-promise-es6": "^0.3.2",
