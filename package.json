@@ -33,7 +33,7 @@
     "mkdirp": "^0.5.1",
     "mocha": "^7.1.2",
     "range": "0.0.3",
-    "rimraf": "^2.5.0",
+    "rimraf": "^3.0.2",
     "standard": "^14.3.4"
   },
   "dependencies": {
