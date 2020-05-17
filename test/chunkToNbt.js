@@ -24,8 +24,8 @@ describe('transform chunk to nbt', function () {
   const nbt = prismarineChunkToNbt(chunk)
 
   it('write with the correct structure', function () {
-    assert.equal(nbt.name, '')
-    assert.equal(nbt.type, 'compound')
+    assert.strictEqual(nbt.name, '')
+    assert.strictEqual(nbt.type, 'compound')
   })
 
   it('can write biomes', function () {
@@ -35,15 +35,15 @@ describe('transform chunk to nbt', function () {
   })
 
   it('can write sections', function () {
-    assert.equal(nbt.value.Level.value.Sections.value.value[3].Blocks.value[16 * (16 * 2)], 2)
+    assert.strictEqual(nbt.value.Level.value.Sections.value.value[3].Blocks.value[16 * (16 * 2)], 2)
     // console.log(JSON.stringify(nbt.value.Level.value.Sections.value.value[3].Blocks.value[16*(16*2)],null,2));
   })
 
   const bufferEqual = require('buffer-equal')
   it('has internal consistency', function () {
     const reChunk = nbtChunkToPrismarineChunk(nbt)
-    assert.equal(reChunk.getBlockType(new Vec3(0, 50, 0)), 2, 'wrong block type at 0,50,0')
-    assert.equal(reChunk.getSkyLight(new Vec3(0, 50, 0)), 15)
+    assert.strictEqual(reChunk.getBlockType(new Vec3(0, 50, 0)), 2, 'wrong block type at 0,50,0')
+    assert.strictEqual(reChunk.getSkyLight(new Vec3(0, 50, 0)), 15)
     assert(bufferEqual(reChunk.dump(), chunk.dump()))
   })
 })

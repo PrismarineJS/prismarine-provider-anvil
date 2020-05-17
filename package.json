@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha test/",
     "pretest": "npm run lint",
-    "lint": "standard"
+    "lint": "standard",
+    "fix": "standard --fix"
   },
   "repository": {
     "type": "git",

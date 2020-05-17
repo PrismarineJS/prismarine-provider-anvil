@@ -6,7 +6,7 @@ const Vec3 = require('vec3').Vec3
 const { readUInt4LE, writeUInt4LE } = require('uint4')
 
 function nbtChunkToPrismarineChunk (data) {
-  let nbtd = nbt.simplify(data)
+  const nbtd = nbt.simplify(data)
   const chunk = new Chunk()
   readSections(chunk, nbtd.Level.Sections)
   readBiomes(chunk, nbtd.Level.Biomes)
@@ -15,12 +15,12 @@ function nbtChunkToPrismarineChunk (data) {
 
 function prismarineChunkToNbt (chunk) {
   return {
-    'name': '',
-    'type': 'compound',
-    'value': {
-      'Level': {
-        'type': 'compound',
-        'value': {
+    name: '',
+    type: 'compound',
+    value: {
+      Level: {
+        type: 'compound',
+        value: {
           Biomes: writeBiomes(chunk),
           Sections: writeSections(chunk)
         }
@@ -38,15 +38,15 @@ function writeSections (chunk) {
   for (let sectionY = 0; sectionY < 16; sectionY++) { sections.push(writeSection(chunk, sectionY)) }
 
   return {
-    'type': 'list',
-    'value': {
-      'type': 'compound',
-      'value': sections
+    type: 'list',
+    value: {
+      type: 'compound',
+      value: sections
     }
   }
 }
 
-function readSection (chunk, {Y, Blocks, Add, Data, BlockLight, SkyLight}) {
+function readSection (chunk, { Y, Blocks, Add, Data, BlockLight, SkyLight }) {
   readBlocks(chunk, Y, Blocks)
   readSkyLight(chunk, Y, SkyLight)
   readBlockLight(chunk, Y, BlockLight)
@@ -83,7 +83,7 @@ function readBlocks (chunk, sectionY, blocks) {
 }
 
 function toSignedArray (buffer) {
-  let arr = []
+  const arr = []
   for (let index = 0; index < buffer.length; index++) { arr.push(buffer.readInt8(index)) }
   return arr
 }
@@ -98,8 +98,8 @@ function writeBlocks (chunk, sectionY) {
     }
   }
   return {
-    'type': 'byteArray',
-    'value': toSignedArray(buffer)
+    type: 'byteArray',
+    value: toSignedArray(buffer)
   }
 }
 
@@ -120,8 +120,8 @@ function writeData (chunk, sectionY) {
     }
   }
   return {
-    'type': 'byteArray',
-    'value': toSignedArray(buffer)
+    type: 'byteArray',
+    value: toSignedArray(buffer)
   }
 }
 
@@ -142,8 +142,8 @@ function writeBlockLight (chunk, sectionY) {
     }
   }
   return {
-    'type': 'byteArray',
-    'value': toSignedArray(buffer)
+    type: 'byteArray',
+    value: toSignedArray(buffer)
   }
 }
 
@@ -164,8 +164,8 @@ function writeSkyLight (chunk, sectionY) {
     }
   }
   return {
-    'type': 'byteArray',
-    'value': toSignedArray(buffer)
+    type: 'byteArray',
+    value: toSignedArray(buffer)
   }
 }
 
@@ -185,14 +185,14 @@ function writeBiomes (chunk) {
     for (let x = 0; x < 16; x++) { biomes.push(chunk.getBiome(new Vec3(x, 0, z))) }
   }
   return {
-    'value': biomes,
-    'type': 'byteArray'
+    value: biomes,
+    type: 'byteArray'
   }
 }
 
 function loader (mcVersion) {
   Chunk = require('prismarine-chunk')(mcVersion)
-  return {nbtChunkToPrismarineChunk, prismarineChunkToNbt}
+  return { nbtChunkToPrismarineChunk, prismarineChunkToNbt }
 }
 
 module.exports = loader

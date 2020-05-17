@@ -5,5 +5,5 @@ if (process.argv.length !== 3) {
   process.exit(1)
 }
 
-writeLevel(process.argv[2], {'RandomSeed': [123, 0]})
+writeLevel(process.argv[2], { RandomSeed: [123, 0] })
   .catch(function (err) { console.log(err.stack) })
