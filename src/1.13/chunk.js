@@ -94,29 +94,29 @@ module.exports = (Chunk, mcData) => {
       if (name === 'vine') {
         block.states = [
           {
-            'name': 'east',
-            'type': 'bool',
-            'num_values': 2
+            name: 'east',
+            type: 'bool',
+            num_values: 2
           },
           {
-            'name': 'north',
-            'type': 'bool',
-            'num_values': 2
+            name: 'north',
+            type: 'bool',
+            num_values: 2
           },
           {
-            'name': 'south',
-            'type': 'bool',
-            'num_values': 2
+            name: 'south',
+            type: 'bool',
+            num_values: 2
           },
           {
-            'name': 'up',
-            'type': 'bool',
-            'num_values': 2
+            name: 'up',
+            type: 'bool',
+            num_values: 2
           },
           {
-            'name': 'west',
-            'type': 'bool',
-            'num_values': 2
+            name: 'west',
+            type: 'bool',
+            num_values: 2
           }
         ]
       }
