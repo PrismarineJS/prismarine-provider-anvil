@@ -1,13 +1,19 @@
 const nbt = require('prismarine-nbt')
 const Vec3 = require('vec3').Vec3
-const { readUInt4LE, writeUInt4LE } = require('uint4')
+const { writeUInt4LE } = require('uint4')
 
-module.exports = (Chunk) => {
+const ChunkSection = require('prismarine-chunk/src/pc/1.13/ChunkSection')
+
+function neededBits (value) {
+  return 32 - Math.clz32(value)
+}
+
+module.exports = (Chunk, mcData) => {
   function nbtChunkToPrismarineChunk (data) {
     const nbtd = nbt.simplify(data)
     const chunk = new Chunk()
     readSections(chunk, nbtd.Level.Sections)
-    readBiomes(chunk, nbtd.Level.Biomes)
+    // readBiomes(chunk, nbtd.Level.Biomes)
     return chunk
   }
 
@@ -44,11 +50,100 @@ module.exports = (Chunk) => {
     }
   }
 
-  function readSection (chunk, { Y, Blocks, Add, Data, BlockLight, SkyLight }) {
-    readBlocks(chunk, Y, Blocks)
-    readSkyLight(chunk, Y, SkyLight)
-    readBlockLight(chunk, Y, BlockLight)
-    readData(chunk, Y, Data)
+  function readSection (chunk, section) {
+    let chunkSection = chunk.sections[section.Y]
+    if (!chunkSection) {
+      chunkSection = new ChunkSection()
+      chunk.sections[section.Y] = chunkSection
+      chunk.sectionMask |= 1 << section.Y
+    }
+
+    readPalette(chunkSection, section.Palette)
+    readBlocks(chunkSection, section.BlockStates)
+
+    // TODO light
+  }
+
+  function parseValue (value, state) {
+    if (state.type === 'enum') {
+      return state.values.indexOf(value.toUpperCase())
+    }
+    if (value === 'true') return 0
+    if (value === 'false') return 1
+    return parseInt(value, 10)
+  }
+
+  function getStateValue (states, name, value) {
+    let offset = 1
+    for (let i = states.length - 1; i >= 0; i--) {
+      const state = states[i]
+      if (state.name === name) {
+        return offset * parseValue(value, state)
+      }
+      offset *= state.num_values
+    }
+    return 0
+  }
+
+  function readPalette (section, palette) {
+    // console.log(palette.length+' '+neededBits(palette.length-1))
+    section.palette = []
+    for (const type of palette) {
+      const name = type.Name.split(':')[1]
+      const block = mcData.blocksByName[name]
+      if (name === 'vine') {
+        block.states = [
+          {
+            'name': 'east',
+            'type': 'bool',
+            'num_values': 2
+          },
+          {
+            'name': 'north',
+            'type': 'bool',
+            'num_values': 2
+          },
+          {
+            'name': 'south',
+            'type': 'bool',
+            'num_values': 2
+          },
+          {
+            'name': 'up',
+            'type': 'bool',
+            'num_values': 2
+          },
+          {
+            'name': 'west',
+            'type': 'bool',
+            'num_values': 2
+          }
+        ]
+      }
+      let data = 0
+      if (type.Properties) {
+        for (const [key, value] of Object.entries(type.Properties)) {
+          data += getStateValue(block.states, key, value)
+        }
+      }
+      const stateId = block.minStateId + data
+      section.palette.push(stateId)
+    }
+  }
+
+  function readBlocks (section, blockStates) {
+    section.data = section.data.resizeTo(Math.max(4, neededBits(section.palette.length - 1)))
+    for (let i = 0; i < blockStates.length; i++) {
+      section.data.data[i * 2] = blockStates[i][1] >>> 0
+      section.data.data[i * 2 + 1] = blockStates[i][0] >>> 0
+    }
+
+    section.solidBlockCount = 0
+    for (let i = 0; i < 4096; i++) {
+      if (section.data.get(i) !== 0) {
+        section.solidBlockCount += 1
+      }
+    }
   }
 
   function writeSection (chunk, sectionY) {
@@ -61,22 +156,6 @@ module.exports = (Chunk) => {
       Data: writeData(chunk, sectionY),
       BlockLight: writeBlockLight(chunk, sectionY),
       SkyLight: writeSkyLight(chunk, sectionY)
-    }
-  }
-
-  function indexToPos (index, sectionY) {
-    const y = index >> 8
-    const z = (index >> 4) & 0xf
-    const x = index & 0xf
-    return new Vec3(x, sectionY * 16 + y, z)
-  }
-
-  function readBlocks (chunk, sectionY, blocks) {
-    blocks = Buffer.from(blocks)
-    for (let index = 0; index < blocks.length; index++) {
-      const blockType = blocks.readUInt8(index)
-      const pos = indexToPos(index, sectionY)
-      chunk.setBlockType(pos, blockType)
     }
   }
 
@@ -101,15 +180,6 @@ module.exports = (Chunk) => {
     }
   }
 
-  function readData (chunk, sectionY, metadata) {
-    metadata = Buffer.from(metadata)
-    for (let index = 0; index < metadata.length; index += 0.5) {
-      const meta = readUInt4LE(metadata, index)
-      const pos = indexToPos(index * 2, sectionY)
-      chunk.setBlockData(pos, meta)
-    }
-  }
-
   function writeData (chunk, sectionY) {
     const buffer = Buffer.alloc(16 * 16 * 8)
     for (let y = 0; y < 16; y++) {
@@ -120,15 +190,6 @@ module.exports = (Chunk) => {
     return {
       type: 'byteArray',
       value: toSignedArray(buffer)
-    }
-  }
-
-  function readBlockLight (chunk, sectionY, blockLights) {
-    blockLights = Buffer.from(blockLights)
-    for (let index = 0; index < blockLights.length; index += 0.5) {
-      const blockLight = readUInt4LE(blockLights, index)
-      const pos = indexToPos(index * 2, sectionY)
-      chunk.setBlockLight(pos, blockLight)
     }
   }
 
@@ -145,15 +206,6 @@ module.exports = (Chunk) => {
     }
   }
 
-  function readSkyLight (chunk, sectionY, skylights) {
-    skylights = Buffer.from(skylights)
-    for (let index = 0; index < skylights.length; index += 0.5) {
-      const skylight = readUInt4LE(skylights, index)
-      const pos = indexToPos(index * 2, sectionY)
-      chunk.setSkyLight(pos, skylight)
-    }
-  }
-
   function writeSkyLight (chunk, sectionY) {
     const buffer = Buffer.alloc(16 * 16 * 8)
     for (let y = 0; y < 16; y++) {
@@ -164,16 +216,6 @@ module.exports = (Chunk) => {
     return {
       type: 'byteArray',
       value: toSignedArray(buffer)
-    }
-  }
-
-  function readBiomes (chunk, biomes) {
-    biomes = Buffer.from(biomes)
-    for (let index = 0; index < biomes.length; index++) {
-      const biome = biomes.readUInt8(index)
-      const z = index >> 4
-      const x = index & 0xF
-      chunk.setBiome(new Vec3(x, 0, z), biome)
     }
   }
 

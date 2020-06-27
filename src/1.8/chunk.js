@@ -2,7 +2,7 @@ const nbt = require('prismarine-nbt')
 const Vec3 = require('vec3').Vec3
 const { readUInt4LE, writeUInt4LE } = require('uint4')
 
-module.exports = (Chunk) => {
+module.exports = (Chunk, mcData) => {
   function nbtChunkToPrismarineChunk (data) {
     const nbtd = nbt.simplify(data)
     const chunk = new Chunk()

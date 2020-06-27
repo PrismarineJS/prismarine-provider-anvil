@@ -10,5 +10,5 @@ module.exports = (mcVersion) => {
     '1.12': require('./1.8/chunk'),
     '1.13': require('./1.13/chunk')
   }
-  return chunkImplementations[mcData.version.majorVersion](Chunk)
+  return chunkImplementations[mcData.version.majorVersion](Chunk, mcData)
 }
