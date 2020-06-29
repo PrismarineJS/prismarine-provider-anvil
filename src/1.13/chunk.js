@@ -59,6 +59,12 @@ module.exports = (Chunk, mcData) => {
     }
 
     readPalette(chunkSection, section.Palette)
+    // Empty (filled with air) sections can be stored, but make the client crash if
+    // they are sent over. Remove them as soon as possible
+    if (chunkSection.palette.length === 1 && chunkSection.palette[0] === 0) {
+      chunk.sections[section.Y] = null
+      chunk.sectionMask &= ~(1 << section.Y)
+    }
     readBlocks(chunkSection, section.BlockStates)
 
     // TODO light
@@ -66,7 +72,7 @@ module.exports = (Chunk, mcData) => {
 
   function parseValue (value, state) {
     if (state.type === 'enum') {
-      return state.values.indexOf(value.toUpperCase())
+      return state.values.indexOf(value)
     }
     if (value === 'true') return 0
     if (value === 'false') return 1
@@ -86,40 +92,10 @@ module.exports = (Chunk, mcData) => {
   }
 
   function readPalette (section, palette) {
-    // console.log(palette.length+' '+neededBits(palette.length-1))
     section.palette = []
     for (const type of palette) {
       const name = type.Name.split(':')[1]
       const block = mcData.blocksByName[name]
-      if (name === 'vine') {
-        block.states = [
-          {
-            name: 'east',
-            type: 'bool',
-            num_values: 2
-          },
-          {
-            name: 'north',
-            type: 'bool',
-            num_values: 2
-          },
-          {
-            name: 'south',
-            type: 'bool',
-            num_values: 2
-          },
-          {
-            name: 'up',
-            type: 'bool',
-            num_values: 2
-          },
-          {
-            name: 'west',
-            type: 'bool',
-            num_values: 2
-          }
-        ]
-      }
       let data = 0
       if (type.Properties) {
         for (const [key, value] of Object.entries(type.Properties)) {
