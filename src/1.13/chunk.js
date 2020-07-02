@@ -177,7 +177,7 @@ module.exports = (Chunk, mcData) => {
   function writeBlocks (blocks) {
     const buffer = new Array(blocks.data.length / 2)
     for (let i = 0; i < buffer.length; i++) {
-      buffer[i] = [blocks.data[i * 2 + 1], blocks.data[i * 2]]
+      buffer[i] = [blocks.data[i * 2 + 1] << 0, blocks.data[i * 2] << 0]
     }
     return {
       type: 'longArray',

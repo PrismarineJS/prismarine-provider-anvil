@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 
-const Vec3 = require('vec3')
+const { Vec3 } = require('vec3')
 const assert = require('assert')
 
 const testedVersions = ['1.8', '1.13']
