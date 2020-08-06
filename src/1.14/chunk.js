@@ -21,7 +21,14 @@ module.exports = (Chunk, mcData) => {
           type: 'compound',
           value: {
             Biomes: { value: chunk.biomes, type: 'intArray' },
-            Sections: writeSections(chunk)
+            Sections: writeSections(chunk),
+            Heightmaps: {
+              type: 'compound',
+              name: '',
+              value: {
+                MOTION_BLOCKING: { type: 'longArray', value: new Array(36).fill([0, 0]) } // TODO: replace fake heightmap with prismarine-chunk implementation
+              }
+            }
           }
         }
       }
