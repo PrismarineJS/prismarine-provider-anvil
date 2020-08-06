@@ -3,7 +3,7 @@
 const { Vec3 } = require('vec3')
 const assert = require('assert')
 
-const testedVersions = ['1.8', '1.13', '1.14']
+const testedVersions = ['1.8', '1.13', '1.14', '1.16']
 
 for (const version of testedVersions) {
   const Chunk = require('prismarine-chunk')(version)
@@ -31,8 +31,20 @@ for (const version of testedVersions) {
     })
 
     it('can write biomes', function () {
-      for (let z = 0; z < 16; z++) {
-        for (let x = 0; x < 16; x++) { assert(nbt.value.Level.value.Biomes.value[z * 16 + x] === chunk.getBiome(new Vec3(x, 0, z))) }
+      if (version === '1.16') {
+        for (let y = 0; y < 64; y++) {
+          for (let x = 0; x < 4; x++) {
+            for (let z = 0; z < 4; z++) {
+              assert(nbt.value.Level.value.Biomes.value[y * 16 + x * 4 + z] === chunk.getBiome(new Vec3(x, y * 4, z)))
+            }
+          }
+        }
+      } else {
+        for (let z = 0; z < 16; z++) {
+          for (let x = 0; x < 16; x++) {
+            assert(nbt.value.Level.value.Biomes.value[z * 16 + x] === chunk.getBiome(new Vec3(x, 0, z)))
+          }
+        }
       }
     })
 
