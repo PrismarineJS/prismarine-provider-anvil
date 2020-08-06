@@ -1,9 +1,6 @@
 const nbt = require('prismarine-nbt')
 const ChunkSection = require('prismarine-chunk/src/pc/1.13/ChunkSection')
-
-function neededBits (value) {
-  return 32 - Math.clz32(value)
-}
+const neededBits = require('prismarine-chunk/src/pc/common/neededBits')
 
 module.exports = (Chunk, mcData) => {
   function nbtChunkToPrismarineChunk (data) {
