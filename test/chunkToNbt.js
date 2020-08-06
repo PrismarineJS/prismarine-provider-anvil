@@ -3,7 +3,7 @@
 const { Vec3 } = require('vec3')
 const assert = require('assert')
 
-const testedVersions = ['1.8', '1.13']
+const testedVersions = ['1.8', '1.13', '1.14']
 
 for (const version of testedVersions) {
   const Chunk = require('prismarine-chunk')(version)

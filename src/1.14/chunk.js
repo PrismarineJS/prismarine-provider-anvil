@@ -1,5 +1,6 @@
 const nbt = require('prismarine-nbt')
-const ChunkSection = require('prismarine-chunk/src/pc/1.13/ChunkSection')
+const ChunkSection = require('prismarine-chunk/src/pc/1.14/ChunkSection')
+const BitArray = require('prismarine-chunk/src/pc/common/BitArray')
 const neededBits = require('prismarine-chunk/src/pc/common/neededBits')
 
 module.exports = (Chunk, mcData) => {
@@ -35,7 +36,7 @@ module.exports = (Chunk, mcData) => {
     const sections = []
     for (let sectionY = 0; sectionY < 16; sectionY++) {
       const section = chunk.sections[sectionY]
-      if (section) sections.push(writeSection(section, sectionY))
+      if (section) sections.push(writeSection(section, sectionY, chunk.blockLightSections[sectionY + 1], chunk.skyLightSections[sectionY + 1]))
     }
 
     return {
@@ -55,17 +56,33 @@ module.exports = (Chunk, mcData) => {
       chunk.sectionMask |= 1 << section.Y
     }
 
-    readPalette(chunkSection, section.Palette)
-    // Empty (filled with air) sections can be stored, but make the client crash if
-    // they are sent over. Remove them as soon as possible
-    if (chunkSection.palette.length === 1 && chunkSection.palette[0] === 0) {
-      chunk.sections[section.Y] = null
-      chunk.sectionMask &= ~(1 << section.Y)
-      return
+    if (section.Y !== -1) {
+      readPalette(chunkSection, section.Palette)
+      // Empty (filled with air) sections can be stored, but make the client crash if
+      // they are sent over. Remove them as soon as possible
+      if (chunkSection.palette.length === 1 && chunkSection.palette[0] === 0) {
+        chunk.sections[section.Y] = null
+        chunk.sectionMask &= ~(1 << section.Y)
+        return
+      }
+      readBlocks(chunkSection, section.BlockStates)
     }
-    readBlocks(chunkSection, section.BlockStates)
-    readByteArray(chunkSection.blockLight, section.BlockLight)
-    readByteArray(chunkSection.skyLight, section.SkyLight)
+    if (section.BlockLight) {
+      chunk.blockLightMask |= 1 << (section.Y + 1)
+      chunk.blockLightSections[section.Y + 1] = new BitArray({
+        bitsPerValue: 4,
+        capacity: 4096
+      })
+      readByteArray(chunk.blockLightSections[section.Y + 1], section.BlockLight)
+    }
+    if (section.SkyLight) {
+      chunk.skyLightMask |= 1 << (section.Y + 1)
+      chunk.skyLightSections[section.Y + 1] = new BitArray({
+        bitsPerValue: 4,
+        capacity: 4096
+      })
+      readByteArray(chunk.skyLightSections[section.Y + 1], section.SkyLight)
+    }
   }
 
   function parseValue (value, state) {
@@ -132,17 +149,18 @@ module.exports = (Chunk, mcData) => {
     }
   }
 
-  function writeSection (section, sectionY) {
-    return {
+  function writeSection (section, sectionY, blockLight, skyLight) {
+    const nbtSection = {
       Y: {
         type: 'byte',
         value: sectionY
       },
       Palette: writePalette(section.palette),
-      BlockStates: writeBlocks(section.data),
-      BlockLight: writeByteArray(section.blockLight),
-      SkyLight: writeByteArray(section.skyLight)
+      BlockStates: writeBlocks(section.data)
     }
+    if (blockLight !== null) nbtSection.BlockLight = writeByteArray(blockLight)
+    if (skyLight !== null) nbtSection.SkyLight = writeByteArray(skyLight)
+    return nbtSection
   }
 
   function writeValue (state, value) {
