@@ -22,14 +22,23 @@ module.exports = (Chunk, mcData) => {
           value: {
             Biomes: { value: chunk.biomes, type: 'intArray' },
             Sections: writeSections(chunk),
-            Heightmaps: {
-              type: 'compound',
-              name: '',
-              value: {
-                MOTION_BLOCKING: { type: 'longArray', value: new Array(36).fill([0, 0]) } // TODO: replace fake heightmap with prismarine-chunk implementation
-              }
+            isLightOn: { // Vanilla server will discard light data if this is missing
+              type: 'byte',
+              value: 1
+            },
+            Status: { // Vanilla server will discard block data if this is missing
+              type: 'string',
+              value: 'full'
+            },
+            shouldSave: { // Force vanilla server to regenerate missing properties like heightmaps
+              type: 'byte',
+              value: 1
             }
           }
+        },
+        DataVersion: { // Vanilla server will discard Level->Status field if this is missing
+          type: 'int',
+          value: 2567 // MC 1.16.1 world version
         }
       }
     }
