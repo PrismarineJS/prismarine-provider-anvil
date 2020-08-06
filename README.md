@@ -43,6 +43,10 @@ Writes a level.dat file
 
 ## History
 
+### 2.3.0
+
+* 1.14, 1.15 and 1.16 support (thanks @IdanHo)
+
 ### 2.2.0
 
 * 1.13 support (thanks @Karang)
