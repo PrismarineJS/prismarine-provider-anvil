@@ -67,14 +67,14 @@ module.exports = (mcVersion, worldVersion, noSpan) => {
     }
 
     function readSection (chunk, section) {
-      let chunkSection = chunk.sections[section.Y]
-      if (!chunkSection) {
-        chunkSection = new ChunkSection()
-        chunk.sections[section.Y] = chunkSection
-        chunk.sectionMask |= 1 << section.Y
-      }
+      if (section.Y >= 0 && section.Y <= 16) {
+        let chunkSection = chunk.sections[section.Y]
+        if (!chunkSection) {
+          chunkSection = new ChunkSection()
+          chunk.sections[section.Y] = chunkSection
+          chunk.sectionMask |= 1 << section.Y
+        }
 
-      if (section.Y !== -1) {
         readPalette(chunkSection, section.Palette)
         // Empty (filled with air) sections can be stored, but make the client crash if
         // they are sent over. Remove them as soon as possible
