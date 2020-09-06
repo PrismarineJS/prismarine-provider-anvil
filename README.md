@@ -43,6 +43,11 @@ Writes a level.dat file
 
 ## History
 
+### 2.3.1
+
+* Only store sections between 0 and 16 (block containing sections) (thanks @IdanHo)
+* remove node-promise-es6, and use fs.promises + util.promisify (thanks @IdanHo)
+
 ### 2.3.0
 
 * 1.14, 1.15 and 1.16 support (thanks @IdanHo)
