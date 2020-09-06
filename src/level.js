@@ -1,5 +1,6 @@
 const nbt = require('prismarine-nbt')
-const { fs, promisify } = require('node-promise-es6')
+const { promisify } = require('util')
+const fs = require('fs').promises
 const zlib = require('zlib')
 
 function write (nbtData, cb) {
