@@ -11,6 +11,7 @@ module.exports = (mcVersion, worldVersion, noSpan) => {
       const chunk = new Chunk()
       readSections(chunk, nbtd.Level.Sections)
       chunk.biomes = nbtd.Level.Biomes
+      chunk.blockEntities = data.value.Level.value.TileEntities.value.value
       return chunk
     }
 
@@ -23,7 +24,17 @@ module.exports = (mcVersion, worldVersion, noSpan) => {
             type: 'compound',
             value: {
               Biomes: { value: chunk.biomes, type: 'intArray' },
+              // Entities: {
+              //   TODO
+              // },
               Sections: writeSections(chunk),
+              TileEntities: {
+                type: 'list',
+                value: {
+                  type: 'compound',
+                  value: chunk.blockEntities || []
+                }
+              },
               isLightOn: { // Vanilla server will discard light data if this is missing
                 type: 'byte',
                 value: 1
