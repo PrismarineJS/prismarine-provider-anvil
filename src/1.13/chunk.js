@@ -8,6 +8,7 @@ module.exports = (Chunk, mcData) => {
     const chunk = new Chunk()
     readSections(chunk, nbtd.Level.Sections)
     chunk.biomes = nbtd.Level.Biomes
+    chunk.blockEntities = data.value.Level.value.TileEntities.value.value
     return chunk
   }
 
@@ -20,7 +21,14 @@ module.exports = (Chunk, mcData) => {
           type: 'compound',
           value: {
             Biomes: { value: chunk.biomes, type: 'intArray' },
-            Sections: writeSections(chunk)
+            Sections: writeSections(chunk),
+            TileEntities: {
+              type: 'list',
+              value: {
+                type: 'compound',
+                value: chunk.blockEntities || []
+              }
+            }
           }
         }
       }
