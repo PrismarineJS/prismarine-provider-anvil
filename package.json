@@ -34,7 +34,7 @@
     "mocha": "^8.0.1",
     "range": "0.0.3",
     "rimraf": "^3.0.2",
-    "standard": "^14.3.4"
+    "standard": "^15.0.0"
   },
   "dependencies": {
     "prismarine-chunk": "^1.20.1",
