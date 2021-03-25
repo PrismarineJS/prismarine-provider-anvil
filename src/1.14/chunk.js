@@ -124,7 +124,7 @@ module.exports = (mcVersion, worldVersion, noSpan) => {
       return 0
     }
 
-    function readPalette (section, palette) {
+    function readPalette (section, palette=[]) {
       section.palette = []
       for (const type of palette) {
         const name = type.Name.split(':')[1]
@@ -140,7 +140,7 @@ module.exports = (mcVersion, worldVersion, noSpan) => {
       }
     }
 
-    function readBlocks (section, blockStates) {
+    function readBlocks (section, blockStates=[]) {
       section.data = section.data.resizeTo(Math.max(4, neededBits(section.palette.length - 1)))
       for (let i = 0; i < blockStates.length; i++) {
         section.data.data[i * 2] = blockStates[i][1] >>> 0
