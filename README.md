@@ -43,6 +43,10 @@ Writes a level.dat file
 
 ## History
 
+### 2.3.2
+
+* Fix 1.16 palette issue
+
 ### 2.3.1
 
 * Only store sections between 0 and 16 (block containing sections) (thanks @IdanHo)
