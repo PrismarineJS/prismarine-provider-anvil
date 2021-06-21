@@ -40,7 +40,7 @@ module.exports = (mcVersion) => {
     async loadRaw (x, z) {
       const region = await this.getRegion(x, z)
       const data = await region.read(x & 0x1F, z & 0x1F)
-      if (mcVersion === 'auto') { //parse version
+      if (mcVersion === 'auto') { // parse version
         const version = nbt.simplify(data)?.DataVersion ?? -380 // -380 = 1.8
         mcVersion = unversionedMcData.versions.pc.find(o => o.dataVersion === version).majorVersion
       }
