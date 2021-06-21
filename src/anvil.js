@@ -1,6 +1,9 @@
 const RegionFile = require('./region')
+const nbt = require('prismarine-nbt')
+const unversionedMcData = require('minecraft-data')
 module.exports = (mcVersion) => {
-  const { nbtChunkToPrismarineChunk, prismarineChunkToNbt } = require('./chunk')(mcVersion)
+  let nbtChunkToPrismarineChunk = null
+  let prismarineChunkToNbt = null
 
   class Anvil {
     constructor (path) {
@@ -36,7 +39,17 @@ module.exports = (mcVersion) => {
 
     async loadRaw (x, z) {
       const region = await this.getRegion(x, z)
-      return region.read(x & 0x1F, z & 0x1F)
+      const data = await region.read(x & 0x1F, z & 0x1F)
+      if (mcVersion === 'auto') { //parse version
+        const version = nbt.simplify(data)?.DataVersion ?? -380 // -380 = 1.8
+        mcVersion = unversionedMcData.versions.pc.find(o => o.dataVersion === version).majorVersion
+      }
+      if (nbtChunkToPrismarineChunk === null && prismarineChunkToNbt === null) {
+        const chunk = require('./chunk')(mcVersion)
+        nbtChunkToPrismarineChunk = chunk.nbtChunkToPrismarineChunk
+        prismarineChunkToNbt = chunk.prismarineChunkToNbt
+      }
+      return data
     }
 
     // returns a Promise. Resolve an empty object when successful
