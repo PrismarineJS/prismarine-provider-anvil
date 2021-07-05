@@ -59,6 +59,7 @@ module.exports = (mcVersion) => {
           }
         }
       }
+      region.file.close()
       return chunks
     }
   }
