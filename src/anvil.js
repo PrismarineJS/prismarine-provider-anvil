@@ -55,12 +55,13 @@ module.exports = (mcVersion) => {
       for (let _x = 0; _x < 32; _x++) {
         for (let _z = 0; _z < 32; _z++) {
           if (region.hasChunk(_x, _z)) {
-            chunks.push(await this.load(x * 32 + _x, z * 32 + _z))
+            chunks.push(this.load(x * 32 + _x, z * 32 + _z))
           }
         }
       }
+      const toRet = await Promise.all(chunks)
       region.file.close()
-      return chunks
+      return toRet
     }
   }
 
