@@ -31,6 +31,10 @@ Returns a promise containing the prismarine chunk at x,z or null if that chunk i
 
 Returns a promise containing the nbt at x,z or null if that nbt isn't saved.
 
+#### Anvil.getAllChunksInRegion(x,z)
+
+Returns an promise of an array of all chunks in the region
+
 ### level
 
 #### level.readLevel(path)
