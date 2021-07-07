@@ -4,7 +4,7 @@ const fs = require('fs').promises
 const zlib = require('zlib')
 
 function write (nbtData, cb) {
-  const data = nbt.writeJsObject(nbtData)
+  const data = nbt.writeUncompressed(nbtData)
   zlib.gzip(data, cb)
 }
 
@@ -20,6 +20,10 @@ async function readLevel (path) {
 }
 
 async function writeLevel (path, levelData) {
-  const data = await writeAsync({ Data: levelData })
+  const data = await writeAsync({
+    type: 'compound',
+    name: '',
+    value: { Data: levelData }
+  })
   await fs.writeFile(path, data)
 }
