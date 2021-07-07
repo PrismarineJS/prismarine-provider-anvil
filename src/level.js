@@ -20,10 +20,8 @@ async function readLevel (path) {
 }
 
 async function writeLevel (path, levelData) {
-  const data = await writeAsync({
-    type: 'compound',
-    name: '',
-    value: { Data: levelData }
-  })
+  const compound = nbt.comp({ Data: levelData })
+  compound.name = ''
+  const data = await writeAsync(compound)
   await fs.writeFile(path, data)
 }
