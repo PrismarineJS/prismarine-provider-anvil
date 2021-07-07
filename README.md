@@ -37,9 +37,11 @@ Returns a promise containing the nbt at x,z or null if that nbt isn't saved.
 
 Reads a level.dat file
 
-#### level.writeLevel(path,value)
+#### level.writeLevel(path, value)
 
 Writes a level.dat file
+
+**value**: Javascript object respecting the nbt format. Recommended to use `nbt.comp()` `nbt.short()` `nbt.list()`...
 
 ## History
 
