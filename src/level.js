@@ -19,22 +19,9 @@ async function readLevel (path) {
   return nbt.simplify(dnbt).Data
 }
 
-async function writeLevel (path, value) {
-  const nbt = {
-    type: 'compound',
-    name: '',
-    value: {
-      Data: {
-        type: 'compound',
-        value: {
-          RandomSeed: {
-            type: 'long',
-            value: value.RandomSeed
-          }
-        }
-      }
-    }
-  }
-  const data = await writeAsync(nbt)
+async function writeLevel (path, levelData) {
+  const compound = nbt.comp({ Data: levelData })
+  compound.name = ''
+  const data = await writeAsync(compound)
   await fs.writeFile(path, data)
 }

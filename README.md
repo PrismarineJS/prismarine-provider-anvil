@@ -41,9 +41,11 @@ Returns an promise of an array of all chunks in the region
 
 Reads a level.dat file
 
-#### level.writeLevel(path,value)
+#### level.writeLevel(path, value)
 
 Writes a level.dat file
+
+**value**: Javascript object respecting the nbt format. Recommended to use `nbt.comp()` `nbt.short()` `nbt.list()`...
 
 ## History
 
