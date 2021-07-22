@@ -3,3 +3,4 @@ dist/
 distTest/
 world/testRegion/*
 package-lock.json
+test/fixtures/*

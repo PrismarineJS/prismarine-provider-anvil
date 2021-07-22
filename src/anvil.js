@@ -48,6 +48,21 @@ module.exports = (mcVersion) => {
       const region = await this.getRegion(x, z)
       await region.write(x & 0x1F, z & 0x1F, nbt)
     }
+
+    async getAllChunksInRegion (x, z) {
+      const region = await this.getRegion(x * 32, z * 32)
+      const chunks = []
+      for (let _x = 0; _x < 32; _x++) {
+        for (let _z = 0; _z < 32; _z++) {
+          if (region.hasChunk(_x, _z)) {
+            chunks.push(this.load(x * 32 + _x, z * 32 + _z))
+          }
+        }
+      }
+      const toRet = await Promise.all(chunks)
+      region.file.close()
+      return toRet
+    }
   }
 
   return Anvil
