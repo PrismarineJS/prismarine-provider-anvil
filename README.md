@@ -47,6 +47,11 @@ Writes a level.dat file
 
 ## History
 
+### 2.4.0
+
+* adds getAllChunksInRegion function (@U9G)
+* used exposed section instead of using internals of pchunk (@rom1504)
+
 ### 2.3.2
 
 * Fix 1.16 palette issue
