@@ -3,7 +3,7 @@
 const { Vec3 } = require('vec3')
 const assert = require('assert')
 
-const testedVersions = ['1.8', '1.13', '1.14', '1.16']
+const testedVersions = ['1.8', '1.13', '1.14', '1.16', '1.17']
 
 for (const version of testedVersions) {
   const Chunk = require('prismarine-chunk')(version)
@@ -31,7 +31,7 @@ for (const version of testedVersions) {
     })
 
     it('can write biomes', function () {
-      if (version === '1.16') {
+      if (version === '1.16' || version === '1.17') {
         for (let y = 0; y < 64; y++) {
           for (let x = 0; x < 4; x++) {
             for (let z = 0; z < 4; z++) {
