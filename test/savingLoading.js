@@ -9,7 +9,7 @@ const assert = require('assert')
 const mkdirp = require('mkdirp')
 const rimraf = require('rimraf')
 
-const testedVersions = ['1.8', '1.13', '1.14', '1.16']
+const testedVersions = ['1.8', '1.13', '1.14', '1.16', '1.17']
 
 for (const version of testedVersions) {
   const Chunk = require('prismarine-chunk')(version)
