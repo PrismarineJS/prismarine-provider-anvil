@@ -25,4 +25,5 @@ for (const version of testedVersions) {
     it('has corrent section mask ', function () {
       assert.strictEqual(chunk.getMask(), 0b001)
     })
+  })
 }
