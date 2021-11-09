@@ -1,11 +1,9 @@
-sectionMask
-
 /* eslint-env mocha */
 
 const { Vec3 } = require('vec3')
 const assert = require('assert')
 
-const longVersions = ['1.9', '1.13', '1.14', '1.16', '1.17']
+const testedVersions = ['1.9', '1.13', '1.14', '1.16', '1.17']
 
 for (const version of testedVersions) {
   const Chunk = require('prismarine-chunk')(version)
