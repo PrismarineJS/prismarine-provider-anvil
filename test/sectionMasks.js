@@ -21,7 +21,7 @@ for (const version of testedVersions) {
 
   describe('chunk masks ' + version, function () {
     it('has corrent section mask ', function () {
-      assert.strictEqual(chunk.getMask(), 0b001)
+      assert.strictEqual(chunk.getMask(), 0b1000)
     })
   })
 }
