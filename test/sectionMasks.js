@@ -30,14 +30,15 @@ for (const version of testedVersions) {
         assert.strictEqual(chunk.getMask(), sectionMask)
       }
     })
-    if (chunk.skyLightMask !== undefined) it('has correct sky light mask ', function () {
+    if (chunk.skyLightMask === undefined) return // Not implemented until 1.14
+    it('has correct sky light mask ', function () {
       if (usesBitArray.includes(version)) {
         assert.deepEqual(chunk.skyLightMask.toLongArray(), [[0, skyLightMask]])
       } else {
         assert.strictEqual(chunk.skyLightMask, skyLightMask)
       }
     })
-    if (chunk.blockLightMask !== undefined) it('has correct block light mask ', function () {
+    it('has correct block light mask ', function () {
       if (usesBitArray.includes(version)) {
         assert.deepEqual(chunk.skyLightMask.toLongArray(), [[0, blockLightMask]])
       } else {
