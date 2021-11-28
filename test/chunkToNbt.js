@@ -23,11 +23,22 @@ for (const version of testedVersions) {
   const nbtChunkToPrismarineChunk = require('../').chunk(version).nbtChunkToPrismarineChunk
 
   describe('transform chunk to nbt ' + version, function () {
-    const nbt = prismarineChunkToNbt(chunk)
+    const nbt = prismarineChunkToNbt(chunk, 4, 2)
 
     it('write with the correct structure', function () {
       assert.strictEqual(nbt.name, '')
       assert.strictEqual(nbt.type, 'compound')
+    })
+
+    it('write the correct chunk positions', function () {
+      const level = nbt.value.Level
+      assert.strictEqual(level.type, 'compound')
+
+      assert.strictEqual(level.value.xPos.type, 'int')
+      assert.strictEqual(level.value.zPos.type, 'int')
+
+      assert.strictEqual(level.value.xPos.value, 4)
+      assert.strictEqual(level.value.zPos.value, 2)
     })
 
     it('can write biomes', function () {

@@ -11,7 +11,7 @@ module.exports = (Chunk, mcData) => {
     return chunk
   }
 
-  function prismarineChunkToNbt (chunk) {
+  function prismarineChunkToNbt (chunk, chunkXPos, chunkZPos) {
     return {
       name: '',
       type: 'compound',
@@ -20,7 +20,15 @@ module.exports = (Chunk, mcData) => {
           type: 'compound',
           value: {
             Biomes: writeBiomes(chunk),
-            Sections: writeSections(chunk)
+            Sections: writeSections(chunk),
+            xPos: {
+              type: 'int',
+              value: chunkXPos
+            },
+            zPos: {
+              type: 'int',
+              value: chunkZPos
+            }
           }
         }
       }

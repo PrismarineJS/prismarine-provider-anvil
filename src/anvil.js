@@ -41,7 +41,7 @@ module.exports = (mcVersion) => {
 
     // returns a Promise. Resolve an empty object when successful
     async save (x, z, chunk) {
-      await this.saveRaw(x, z, prismarineChunkToNbt(chunk))
+      await this.saveRaw(x, z, prismarineChunkToNbt(chunk, x, z))
     }
 
     async saveRaw (x, z, nbt) {
