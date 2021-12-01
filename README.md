@@ -47,6 +47,11 @@ Writes a level.dat file
 
 ## History
 
+### 2.5.0
+
+* Adds 1.17 support (thanks @Saiv46)
+* Write the chunk x and z position like vanilla does (@Paulomart)
+
 ### 2.4.0
 
 * adds getAllChunksInRegion function (@U9G)
