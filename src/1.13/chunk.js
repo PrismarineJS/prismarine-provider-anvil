@@ -28,8 +28,16 @@ module.exports = (Chunk, mcData) => {
             zPos: {
               type: 'int',
               value: chunkZPos
+            },
+            Status: {
+              type: 'string',
+              value: 'postprocessed'
             }
           }
+        },
+        DataVersion: {
+          type: 'int',
+          value: 1631
         }
       }
     }
