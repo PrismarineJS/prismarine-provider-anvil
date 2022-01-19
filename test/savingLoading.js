@@ -1,15 +1,13 @@
 /* eslint-env mocha */
 
+const fs = require('fs')
+const { join } = require('path')
 const flatMap = require('flatmap')
 const range = require('range').range
-const bufferEqual = require('buffer-equal')
 const { Vec3 } = require('vec3')
 const assert = require('assert')
 
-const mkdirp = require('mkdirp')
-const rimraf = require('rimraf')
-
-const testedVersions = ['1.8', '1.13', '1.14', '1.16', '1.17']
+const testedVersions = ['1.8', '1.13', '1.14', '1.16', '1.17', '1.18']
 
 for (const version of testedVersions) {
   const Chunk = require('prismarine-chunk')(version)
@@ -33,13 +31,13 @@ for (const version of testedVersions) {
       return chunk
     }
 
+    const size = 3
     function generateCube (size) {
       return flatMap(range(0, size), (chunkX) => range(0, size).map(chunkZ => ({ chunkX, chunkZ })))
     }
 
-    const size = 3
     let chunks = {}
-    const regionPath = 'world/testRegion' + version
+    const regionPath = join(__dirname, 'world/testRegion' + version)
 
     before(() => {
       chunks = generateCube(size).map(({ chunkX, chunkZ }) => ({ chunkX, chunkZ, chunk: generateRandomChunk(chunkX, chunkZ) }))
@@ -52,29 +50,40 @@ for (const version of testedVersions) {
           .map(async ({ chunkX, chunkZ, chunk }) => {
             const originalChunk = chunk
             const loadedChunk = await anvil.load(chunkX, chunkZ)
-            assert.strictEqual(originalChunk.getBlockType(new Vec3(0, 50, 0)), loadedChunk.getBlockType(new Vec3(0, 50, 0)), 'wrong block type at 0,50,0 at chunk ' + chunkX + ', ' + chunkZ)
-            assert(bufferEqual(originalChunk.dump(), loadedChunk.dump()))
+            const blockA = originalChunk.getBlock(new Vec3(0, 50, 0))
+            const blockB = loadedChunk.getBlock(new Vec3(0, 50, 0))
+            assert.strictEqual(
+              blockA.stateId, blockB.stateId, 'wrong block type at 0,50,0 at chunk ' + chunkX + ', ' + chunkZ)
+            assert(originalChunk.dump().equals(loadedChunk.dump()))
           })
       )
+      await anvil.close()
     }
 
-    describe('in sequence ' + version, () => {
-      before((cb) => mkdirp(regionPath, cb))
-      after(cb => rimraf(regionPath, cb))
+    describe('in sequence ' + version, async () => {
+      fs.rmSync(regionPath, { recursive: true, force: true })
+      fs.mkdirSync(regionPath)
+
       it('save the world in sequence', async () => {
         const anvil = new Anvil(regionPath)
-        await chunks.reduce(async (acc, { chunkX, chunkZ, chunk }) => { await acc; await anvil.save(chunkX, chunkZ, chunk) }, Promise.resolve())
+        await chunks.reduce(async (acc, { chunkX, chunkZ, chunk }) => {
+          await acc
+          await anvil.save(chunkX, chunkZ, chunk)
+        }, Promise.resolve())
+        await anvil.close()
       })
 
       it('load the world correctly in parallel', loadInParallel)
     })
 
     describe('in parallel ' + version, () => {
-      before((cb) => mkdirp(regionPath, cb))
-      after(cb => rimraf(regionPath, cb))
+      fs.rmSync(regionPath, { recursive: true, force: true })
+      fs.mkdirSync(regionPath)
+
       it('save the world in parallel', async () => {
         const anvil = new Anvil(regionPath)
         await Promise.all(chunks.map(({ chunkX, chunkZ, chunk }) => anvil.save(chunkX, chunkZ, chunk)))
+        await anvil.close()
       })
 
       it('load the world correctly in parallel', loadInParallel)
