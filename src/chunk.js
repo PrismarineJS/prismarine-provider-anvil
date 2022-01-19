@@ -1,6 +1,7 @@
-module.exports = (mcVersion) => {
-  const mcData = require('minecraft-data')(mcVersion)
-  const Chunk = require('prismarine-chunk')(mcVersion)
+module.exports = (registryOrVersion) => {
+  const registry = typeof registryOrVersion === 'string' ? require('prismarine-registry')(registryOrVersion) : registryOrVersion
+  const mcData = require('minecraft-data')(registry)
+  const Chunk = require('prismarine-chunk')(registry)
 
   const chunkImplementations = {
     1.8: require('./1.8/chunk'),
@@ -16,5 +17,5 @@ module.exports = (mcVersion) => {
     1.18: require('./1.18/chunk')
   }
 
-  return chunkImplementations[mcData.version.majorVersion](Chunk, mcData)
+  return chunkImplementations[mcData.version.majorVersion](Chunk, registry)
 }
