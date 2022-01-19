@@ -125,13 +125,8 @@ module.exports = (ChunkColumn, registry) => {
     column.inhabitedTime = data.InhabitedTime.valueOf()
 
     for (const section of data.sections) {
-      let bitsPerBlock = Math.ceil(Math.log2(section.block_states.palette.length))
-      let bitsPerBiome = Math.ceil(Math.log2(section.biomes.palette.length))
-
-      // Pretend we don't have 0 bpb to make logic simple... 4096 blocks = 4096 bits = 64 i64s
-      // we use arrays of two i32s to represent i64s hence the messy look... So up to someone like nickelpro to optimise :)
-      if (bitsPerBlock === 0) { bitsPerBlock = 1; section.block_states.data = new Array(64).fill([0, 0]) }
-      if (bitsPerBiome === 0) { bitsPerBiome = 1; section.biomes.data = new Array(64).fill([0, 0]) }
+      const bitsPerBlock = Math.ceil(Math.log2(section.block_states.palette.length))
+      const bitsPerBiome = Math.ceil(Math.log2(section.biomes.palette.length))
 
       column.loadSection(section.Y, { ...section.block_states, bitsPerBlock }, { ...section.biomes, bitsPerBiome }, section.BlockLight, section.SkyLight)
     }
