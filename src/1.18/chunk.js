@@ -110,7 +110,7 @@ module.exports = (ChunkColumn, registry) => {
       PostProcessing: nbt.list(),
       fluid_ticks: nbt.list()
     })
-    require('fs').writeFileSync('bchunk.json', JSON.stringify(nbt.simplify(tag), (k, v) => typeof v === 'bigint' ? v.toString() : v, 2))
+
     return tag
   }
 

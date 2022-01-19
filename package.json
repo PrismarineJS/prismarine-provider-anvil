@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha test/",
-    "pretestz": "npm run lint",
+    "pretest": "npm run lint",
     "lint": "standard",
     "fix": "standard --fix"
   },
