@@ -125,8 +125,12 @@ module.exports = (ChunkColumn, registry) => {
     column.inhabitedTime = data.InhabitedTime.valueOf()
 
     for (const section of data.sections) {
-      const bitsPerBlock = Math.ceil(Math.log2(section.block_states.palette.length))
+      let bitsPerBlock = Math.ceil(Math.log2(section.block_states.palette.length))
       const bitsPerBiome = Math.ceil(Math.log2(section.biomes.palette.length))
+
+      if (bitsPerBlock === 1 || bitsPerBlock === 2 || bitsPerBlock === 3) {
+        bitsPerBlock = 4
+      }
 
       column.loadSection(section.Y, { ...section.block_states, bitsPerBlock }, { ...section.biomes, bitsPerBiome }, section.BlockLight, section.SkyLight)
     }
