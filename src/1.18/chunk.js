@@ -96,7 +96,7 @@ module.exports = (ChunkColumn, registry) => {
       yPos: nbt.int(column.minY >> 4), // Lowest y index
       zPos: nbt.int(z),
 
-      block_entities: nbt.list(column.blockEntities.length ? nbt.comp(column.blockEntities) : null),
+      block_entities: nbt.list(Object.keys(column.blockEntities).length ? nbt.comp(Object.values(column.blockEntities)) : null),
       LastUpdate: nbt.long(column.lastUpdate ?? [Date.now() & 0xffff, 0]),
       InhabitedTime: nbt.long(column.inhabitedTime ?? 0),
       structures: nbt.comp({}),
