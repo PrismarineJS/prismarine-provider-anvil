@@ -135,7 +135,10 @@ module.exports = (ChunkColumn, registry) => {
       column.loadSection(section.Y, { ...section.block_states, bitsPerBlock }, { ...section.biomes, bitsPerBiome }, section.BlockLight, section.SkyLight)
     }
 
-    column.loadBlockEntities(data.block_entities)
+    if (data.block_entities.length) {
+      column.loadBlockEntities(tag.value.block_entities.value.value)
+    }
+
     // Ignore height map data
     // Ignore structures (what are these?)
     // Ignore block_ticks, PostProcessing, FluidTicks
