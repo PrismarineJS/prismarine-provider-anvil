@@ -37,7 +37,7 @@
     "standard": "^16.0.1"
   },
   "dependencies": {
-    "prismarine-chunk": "^1.25.0",
+    "prismarine-chunk": "^1.29.0",
     "prismarine-nbt": "^2.0.0",
     "uint4": "^0.1.2",
     "vec3": "^0.1.6"
