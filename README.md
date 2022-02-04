@@ -47,6 +47,10 @@ Writes a level.dat file
 
 ## History
 
+### 2.6.0
+
+* 1.18 support
+
 ### 2.5.1
 
 * Ensure chunk status and data version are written for v1.13 (@Paulomart)
