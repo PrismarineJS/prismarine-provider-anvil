@@ -23,7 +23,7 @@ module.exports = (ChunkColumn, registry) => {
       const skyLightSection = column.skyLightSections[y - minY + 1]
 
       if (section) {
-        section.palette ??= [section.data.value]
+        section.palette = section.palette !== undefined ? [section.data.value] : section.palette
         let blockStates, biomes, blockLight, skyLight
         const blockPalette = section.palette.map(id => Block.fromStateId(id))
           .map(block => ({
