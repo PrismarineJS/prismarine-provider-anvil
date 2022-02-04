@@ -62,7 +62,7 @@ for (const version of testedVersions) {
 
     describe('in sequence ' + version, async () => {
       fs.rmSync(regionPath, { recursive: true, force: true })
-      fs.mkdirSync(regionPath)
+      fs.mkdirSync(regionPath, { recursive: true, force: true })
 
       it('save the world in sequence', async () => {
         const anvil = new Anvil(regionPath)
@@ -78,7 +78,7 @@ for (const version of testedVersions) {
 
     describe('in parallel ' + version, () => {
       fs.rmSync(regionPath, { recursive: true, force: true })
-      fs.mkdirSync(regionPath)
+      fs.mkdirSync(regionPath, { recursive: true, force: true })
 
       it('save the world in parallel', async () => {
         const anvil = new Anvil(regionPath)
