@@ -30,15 +30,14 @@
     "buffer-equal": "^1.0.0",
     "flatmap": "0.0.3",
     "minecraft-data": "^2.63.0",
-    "mkdirp": "^0.5.1",
     "mocha": "^9.0.0",
+    "prismarine-provider-anvil": "file:.",
+    "prismarine-registry": "^1.1.0",
     "range": "0.0.3",
-    "rimraf": "^3.0.2",
-    "standard": "^16.0.1",
-    "prismarine-provider-anvil": "file:."
+    "standard": "^16.0.1"
   },
   "dependencies": {
-    "prismarine-chunk": "^1.25.0",
+    "prismarine-chunk": "^1.29.0",
     "prismarine-nbt": "^2.0.0",
     "uint4": "^0.1.2",
     "vec3": "^0.1.6"
