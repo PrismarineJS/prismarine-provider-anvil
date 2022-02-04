@@ -1,11 +1,6 @@
 const assert = require('assert')
 const nbt = require('prismarine-nbt')
 
-nbt.intArray = (value = []) => ({ type: 'intArray', value })
-nbt.byteArray = (value = []) => ({ type: 'byteArray', value })
-nbt.longArray = (value = []) => ({ type: 'longArray', value })
-nbt.bool = (value = false) => ({ type: 'bool', value: value })
-
 module.exports = (ChunkColumn, registry) => {
   const Block = require('prismarine-block')(registry)
   const dataVersion = registry.version.dataVersion
