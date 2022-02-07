@@ -261,7 +261,7 @@ class RegionFile {
 
   async close () {
     await this.file.close()
-  };
+  }
 }
 
 RegionFile.VERSION_GZIP = 1

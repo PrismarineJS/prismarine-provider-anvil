@@ -2,7 +2,7 @@
 [![NPM version](https://img.shields.io/npm/v/prismarine-provider-anvil.svg)](http://npmjs.com/package/prismarine-provider-anvil)
 [![Build Status](https://github.com/PrismarineJS/prismarine-provider-anvil/workflows/CI/badge.svg)](https://github.com/PrismarineJS/prismarine-provider-anvil/actions?query=workflow%3A%22CI%22)
 
-Anvil Storage Provider implementation. Support minecraft pc 1.8, 1.9, 1.10, 1.11, 1.12, 1.13, 1.14, 1.15 and 1.16
+Anvil Storage Provider implementation. Support minecraft pc 1.8, 1.9, 1.10, 1.11, 1.12, 1.13, 1.14, 1.15, 1.16, 1.17 and 1.18
 
 ## Usage
 
@@ -46,6 +46,19 @@ Reads a level.dat file
 Writes a level.dat file
 
 ## History
+
+### 2.6.0
+
+* 1.18 support
+
+### 2.5.1
+
+* Ensure chunk status and data version are written for v1.13 (@Paulomart)
+
+### 2.5.0
+
+* Adds 1.17 support (thanks @Saiv46)
+* Write the chunk x and z position like vanilla does (@Paulomart)
 
 ### 2.4.0
 

@@ -14,7 +14,7 @@ module.exports = (mcVersion, worldVersion, noSpan) => {
       return chunk
     }
 
-    function prismarineChunkToNbt (chunk) {
+    function prismarineChunkToNbt (chunk, chunkXPos, chunkZPos) {
       return {
         name: '',
         type: 'compound',
@@ -35,6 +35,14 @@ module.exports = (mcVersion, worldVersion, noSpan) => {
               shouldSave: { // Force vanilla server to regenerate missing properties like heightmaps
                 type: 'byte',
                 value: 1
+              },
+              xPos: {
+                type: 'int',
+                value: chunkXPos
+              },
+              zPos: {
+                type: 'int',
+                value: chunkZPos
               }
             }
           },

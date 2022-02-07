@@ -41,7 +41,8 @@ module.exports = (mcVersion) => {
 
     // returns a Promise. Resolve an empty object when successful
     async save (x, z, chunk) {
-      await this.saveRaw(x, z, prismarineChunkToNbt(chunk))
+      const tag = prismarineChunkToNbt(chunk, x, z)
+      await this.saveRaw(x, z, tag)
     }
 
     async saveRaw (x, z, nbt) {
@@ -60,8 +61,12 @@ module.exports = (mcVersion) => {
         }
       }
       const toRet = await Promise.all(chunks)
-      region.file.close()
+      await region.file.close()
       return toRet
+    }
+
+    async close () {
+      return Promise.all(Object.keys(this.regions).map(name => this.regions[name].file.close()))
     }
   }
 
