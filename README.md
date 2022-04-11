@@ -47,6 +47,10 @@ Writes a level.dat file
 
 ## History
 
+### 2.7.0
+
+* Bump mcdata
+
 ### 2.6.0
 
 * 1.18 support
