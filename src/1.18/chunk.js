@@ -70,7 +70,7 @@ module.exports = (ChunkColumn, registry) => {
         const tag = {
           Y: nbt.byte(y),
           block_states: blockStates,
-          biomes: biomes
+          biomes
         }
 
         if (blockLight) tag.BlockLight = nbt.byteArray(blockLight)

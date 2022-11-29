@@ -83,7 +83,7 @@ module.exports = (Chunk, mcData) => {
     blocks = Buffer.from(blocks)
     for (let index = 0; index < blocks.length; index++) {
       const blockType = blocks.readUInt8(index)
-      const addBlockType = !!add ? readUInt4LE(Buffer.from(add), index / 2) : 0
+      const addBlockType = add ? readUInt4LE(Buffer.from(add), index / 2) : 0
       const pos = indexToPos(index, sectionY)
       chunk.setBlockType(pos, blockType + (addBlockType << 8))
     }
