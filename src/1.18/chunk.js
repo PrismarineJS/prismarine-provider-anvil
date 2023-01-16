@@ -119,8 +119,6 @@ module.exports = (ChunkColumn, registry) => {
     column.lastUpdate = data.LastUpdate.valueOf()
     column.inhabitedTime = data.InhabitedTime.valueOf()
 
-    // console.log('Sections', data.sections)
-
     for (const section of data.sections) {
       let bitsPerBlock = Math.ceil(Math.log2(section.block_states.palette.length))
       const bitsPerBiome = Math.ceil(Math.log2(section.biomes.palette.length))
