@@ -11,13 +11,16 @@ const testedVersions = ['1.8', '1.13', '1.14', '1.16', '1.17', '1.18']
 
 for (const version of testedVersions) {
   const Chunk = require('prismarine-chunk')(version)
+  const mcData = require('minecraft-data')(version)
   const Anvil = require('../').Anvil(version)
+
+  const chunkConfig = mcData.supportFeature('tallWorld') ? { minY: -64, worldHeight: 384 } : undefined
 
   describe('saving and loading works ' + version, function () {
     this.timeout(60 * 1000)
 
     function generateRandomChunk (chunkX, chunkZ) {
-      const chunk = new Chunk()
+      const chunk = new Chunk(chunkConfig)
 
       for (let x = 0; x < 16; x++) {
         for (let z = 0; z < 16; z++) {
