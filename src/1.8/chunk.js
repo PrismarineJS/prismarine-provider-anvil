@@ -53,7 +53,7 @@ module.exports = (Chunk, mcData) => {
   }
 
   function readSection (chunk, { Y, Blocks, Add, Data, BlockLight, SkyLight }) {
-    readBlocks(chunk, Y, Blocks)
+    readBlocks(chunk, Y, Blocks, Add)
     readSkyLight(chunk, Y, SkyLight)
     readBlockLight(chunk, Y, BlockLight)
     readData(chunk, Y, Data)
@@ -79,12 +79,13 @@ module.exports = (Chunk, mcData) => {
     return new Vec3(x, sectionY * 16 + y, z)
   }
 
-  function readBlocks (chunk, sectionY, blocks) {
+  function readBlocks (chunk, sectionY, blocks, add) {
     blocks = Buffer.from(blocks)
     for (let index = 0; index < blocks.length; index++) {
       const blockType = blocks.readUInt8(index)
+      const addBlockType = add ? readUInt4LE(Buffer.from(add), index / 2) : 0
       const pos = indexToPos(index, sectionY)
-      chunk.setBlockType(pos, blockType)
+      chunk.setBlockType(pos, blockType + (addBlockType << 8))
     }
   }
 
