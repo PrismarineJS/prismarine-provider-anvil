@@ -137,7 +137,13 @@ class RegionFile {
       throw new Error('READ ' + x + ',' + z + ' unknown version ' + version)
     }
 
-    return decompress(data).then(nbt.parseUncompressed)
+    return decompress(data).then((data) => {
+      const parsedData = nbt.parseUncompressed(data)
+      // Bioms have to be converted from ids between -128 and 127 to 0 and 255
+      const dataCopy = JSON.parse(JSON.stringify(parsedData))
+      dataCopy.value.Level.value.Biomes.value = dataCopy.value.Level.value.Biomes.value.map(b => b + 128)
+      return dataCopy
+    })
   }
 
   async write (x, z, nbtData) {
@@ -148,7 +154,10 @@ class RegionFile {
   /* write a chunk at (x,z) with length bytes of data to disk */
   async _write (x, z, nbtData) {
     await this.ini
-    const uncompressedData = nbt.writeUncompressed(nbtData)
+    // Deep copy nbtData to shimNbt as nbt has to be saved as ids between -128 and 127 not 0 and 255
+    const shimNbt = JSON.parse(JSON.stringify(nbtData))
+    shimNbt.value.Level.value.Biomes.value = shimNbt.value.Level.value.Biomes.value.map(b => b - 128)
+    const uncompressedData = nbt.writeUncompressed(shimNbt)
     const data = await deflateAsync(uncompressedData)
 
     const length = data.length + 1
