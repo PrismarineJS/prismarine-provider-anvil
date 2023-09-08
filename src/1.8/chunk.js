@@ -8,6 +8,11 @@ module.exports = (Chunk, mcData) => {
     const chunk = new Chunk()
     readSections(chunk, nbtd.Level.Sections)
     readBiomes(chunk, nbtd.Level.Biomes)
+    for (const blockEntity of nbtd.Level.TileEntities || []) {
+      const { x, y, z } = blockEntity
+      const posKey = `${x}${y}${z}`
+      chunk.blockEntities[posKey] = blockEntity
+    }
     return chunk
   }
 
