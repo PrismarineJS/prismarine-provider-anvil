@@ -27,6 +27,28 @@ async function writeLevel (path, value) {
       Data: {
         type: 'compound',
         value: {
+          // ...oldLevel.value?.Data?.value,
+          Version: {
+            type: 'compound',
+            value: {
+              Name: {
+                type: 'string',
+                value: value.Version.Name
+              },
+            }
+          },
+          LevelName: {
+            type: 'string',
+            value: 'prismarine-world'
+          },
+          generatorName: {
+            type: 'string',
+            value: value.generatorName
+          },
+          version: {
+            type: 'int',
+            value: 19133
+          },
           RandomSeed: {
             type: 'long',
             value: value.RandomSeed
