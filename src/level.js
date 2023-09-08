@@ -34,7 +34,7 @@ async function writeLevel (path, value) {
               Name: {
                 type: 'string',
                 value: value.Version.Name
-              },
+              }
             }
           },
           LevelName: {

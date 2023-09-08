@@ -3,6 +3,7 @@
   "version": "2.7.0",
   "description": "Anvil Storage Provider implementation.",
   "main": "index.js",
+  "typings": "src/index.d.ts",
   "scripts": {
     "test": "mocha test/",
     "pretest": "npm run lint",
