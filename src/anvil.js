@@ -1,3 +1,4 @@
+const nbt = require('prismarine-nbt')
 const RegionFile = require('./region')
 module.exports = (mcVersion) => {
   const { nbtChunkToPrismarineChunk, prismarineChunkToNbt } = require('./chunk')(mcVersion)
@@ -31,7 +32,14 @@ module.exports = (mcVersion) => {
     async load (x, z) {
       const data = await this.loadRaw(x, z)
       if (data == null) { return null }
-      return nbtChunkToPrismarineChunk(data)
+      const chunk = nbtChunkToPrismarineChunk(data)
+      for (const _blockEntity of data.value.Level.value.TileEntities?.value?.value || []) {
+        const blockEntityNbt = {type: 'compound', value: _blockEntity}
+        const { x, y, z } = nbt.simplify(blockEntityNbt)
+        const posKey = `${x},${y},${z}`
+        chunk.blockEntities[posKey] = blockEntityNbt
+      }
+      return chunk
     }
 
     async loadRaw (x, z) {
