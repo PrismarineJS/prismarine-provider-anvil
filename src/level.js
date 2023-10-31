@@ -1,3 +1,4 @@
+//@ts-check
 const nbt = require('prismarine-nbt')
 const { promisify } = require('util')
 const fs = require('fs').promises
@@ -39,7 +40,7 @@ async function writeLevel (path, value) {
           },
           LevelName: {
             type: 'string',
-            value: 'prismarine-world'
+            value: value.LevelName ?? 'prismarine-world'
           },
           generatorName: {
             type: 'string',
@@ -52,11 +53,16 @@ async function writeLevel (path, value) {
           RandomSeed: {
             type: 'long',
             value: value.RandomSeed
+          },
+          allowCommands: {
+            type: 'byte',
+            value: (value.allowCommands ?? true) ? 1 : 0
           }
         }
       }
     }
   }
+  //@ts-ignore
   const data = await writeAsync(nbt)
   await fs.writeFile(path, data)
 }
