@@ -20,7 +20,7 @@ async function readLevel (path) {
   return nbt.simplify(dnbt).Data
 }
 
-async function writeLevel (path, value) {
+async function writeLevel (/** @type {string} */path, /** @type {import('./level').LevelDatWrite} */value) {
   const nbt = {
     type: 'compound',
     name: '',
@@ -34,7 +34,7 @@ async function writeLevel (path, value) {
             value: {
               Name: {
                 type: 'string',
-                value: value.Version.Name
+                value: value.Version?.Name
               }
             }
           },
