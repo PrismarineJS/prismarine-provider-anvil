@@ -164,5 +164,5 @@ export interface BiomeSource {
 
 export type LevelDatWrite = Pick<LevelDatFull,  'RandomSeed' | 'Version' | 'generatorName' | 'LevelName' | 'allowCommands'>
 
-export const readLevel = (path: string) => Promise<LevelDatFull>
-export const writeLevel = (path: string, value: LevelDatWrite) => Promise<void>
+export const readLevel: (path: string) => Promise<LevelDatFull>
+export const writeLevel: (path: string, value: LevelDatWrite) => Promise<void>
