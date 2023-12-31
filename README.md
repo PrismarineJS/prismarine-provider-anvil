@@ -47,6 +47,16 @@ Writes a level.dat file
 
 ## History
 
+### 2.8.0
+* [require lazily (#70)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/257f7fd2d995a54fe7e275909b264be106b95063) (thanks @zardoy)
+* [Make created level.dat loadable in singleplayer (#71)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/2638bec1e8bca925e87a8a6a6b945417724fc4a1) (thanks @zardoy)
+* [Add command gh workflow allowing to use release command in comments (#69)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/f3881cb11db3dbcfd6173bc32b89fb6d07da6185) (thanks @rom1504)
+* [Update to node 18.0.0 (#68)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/68766beea0001a7e4833e086ebb903cd410c1eb6) (thanks @rom1504)
+* [Initial support for loading Add data to a block (#64)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/8255f87a888e61c1b75089285e723c731e9e01c4) (thanks @BluSpring)
+* [Fix world height on 1.18+ chunks (#66)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/59c1d72373f5c0b2d81a0618127e1e32f53ae135) (thanks @extremeheat)
+* [Bump mocha from 9.2.2 to 10.0.0 (#62)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/e5814c0fc139fdc6b419f846d8a7d4083fe07edf) (thanks @dependabot[bot])
+* [Bump standard from 16.0.4 to 17.0.0 (#61)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/c2b4199f6fbd6569f3b859b652a3756cf4cc0a61) (thanks @dependabot[bot])
+
 ### 2.7.0
 
 * Bump mcdata
