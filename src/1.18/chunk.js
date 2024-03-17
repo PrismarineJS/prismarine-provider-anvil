@@ -40,7 +40,7 @@ module.exports = (ChunkColumn, registry) => {
           blockStates = nbt.comp({ palette: nbt.list(nbt.comp(blockPalette)), data: nbt.longArray(data) })
         }
 
-        const biomeNamesPalette = biomePalette.map(biomeId => 'minecraft:' + registry.biomes[biomeId].name)
+        const biomeNamesPalette = biomePalette.map(biomeId => 'minecraft:' + registry.biomes[biomeId]?.name ?? 'void')
 
         if (!bitsPerBiome) {
           biomes = nbt.comp({ palette: nbt.list(nbt.string(biomeNamesPalette)) })
