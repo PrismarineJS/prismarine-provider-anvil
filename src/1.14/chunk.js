@@ -181,9 +181,9 @@ module.exports = (mcVersion, worldVersion, noSpan) => {
           type: 'byte',
           value: sectionY
         },
-        Palette: writePalette(section.palette),
         BlockStates: writeBlocks(section.data)
       }
+      if (section.palette !== null) nbtSection.Palette = writePalette(section.palette)
       if (blockLight !== null) nbtSection.BlockLight = writeByteArray(blockLight)
       if (skyLight !== null) nbtSection.SkyLight = writeByteArray(skyLight)
       return nbtSection
