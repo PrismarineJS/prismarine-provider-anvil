@@ -34,7 +34,7 @@ module.exports = (mcVersion) => {
       if (data == null) { return null }
       const chunk = nbtChunkToPrismarineChunk(data)
       for (const _blockEntity of (data.value.block_entities?.value?.value ?? data.value.Level.value.TileEntities?.value?.value) || []) {
-        const blockEntityNbt = {type: 'compound', value: _blockEntity}
+        const blockEntityNbt = { type: 'compound', value: _blockEntity }
         const { x, y, z } = nbt.simplify(blockEntityNbt)
         const posKey = `${x},${y},${z}`
         chunk.blockEntities[posKey] = blockEntityNbt

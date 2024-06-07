@@ -1,4 +1,4 @@
-//@ts-check
+// @ts-check
 const nbt = require('prismarine-nbt')
 const { promisify } = require('util')
 const fs = require('fs').promises
@@ -62,7 +62,7 @@ async function writeLevel (/** @type {string} */path, /** @type {import('./level
       }
     }
   }
-  //@ts-ignore
+  // @ts-ignore
   const data = await writeAsync(nbt)
   await fs.writeFile(path, data)
 }
