@@ -35,7 +35,7 @@ describe('can get chunks from region files', function () {
           const biomes = oldChunk.dumpBiomes()
 
           const chunk = new Chunk()
-          chunk.load(dumped, chunk.getMask(), true, true)
+          chunk.load(dumped, oldChunk.getMask(), true, true)
           chunk.loadBiomes(biomes)
           chunk.loadParsedLight?.(lights.skyLight, lights.blockLight, chunk.skyLightMask, chunk.blockLightMask, chunk.emptySkyLightMask, chunk.emptyBlockLightMask)
         })
