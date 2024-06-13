@@ -20,24 +20,34 @@ describe('can get chunks from region files', function () {
       for (const region of regions) {
         const [, xStr, zStr] = region.match(/r\.(-?\d+)\.(-?\d+)\.mca/)
         const [x, z] = [+xStr, zStr]
-        let oldChunk
+        let prevChunks
         it('open region ' + region, async () => {
           const chunks = (await anvil.getAllChunksInRegion(x, z)).filter(x => x)
           assert(chunks.length > 0)
-          oldChunk = chunks[0]
+          prevChunks = chunks
         })
 
         it('loads chunks into p-chunk ' + region, async () => {
-          // const oldChunk = await anvil.load(x * 32, z * 32)
+          for (const oldChunk of prevChunks) {
+            if (oldChunk.x !== -10 && oldChunk.z !== -6) continue
+            try {
+              const dumped = oldChunk.dump()
+              const lights = oldChunk.dumpLight()
+              const biomes = oldChunk.dumpBiomes()
 
-          const dumped = oldChunk.dump()
-          const lights = oldChunk.dumpLight()
-          const biomes = oldChunk.dumpBiomes()
-
-          const chunk = new Chunk()
-          chunk.load(dumped, oldChunk.getMask(), true, true)
-          chunk.loadBiomes(biomes)
-          chunk.loadParsedLight?.(lights.skyLight, lights.blockLight, chunk.skyLightMask, chunk.blockLightMask, chunk.emptySkyLightMask, chunk.emptyBlockLightMask)
+              const newChunk = new Chunk({
+                minY: oldChunk.minY,
+                worldHeight: oldChunk.worldHeight
+              })
+              newChunk.load(dumped, oldChunk.getMask(), true, true)
+              newChunk.loadBiomes(biomes)
+              newChunk.loadParsedLight?.(lights.skyLight, lights.blockLight, newChunk.skyLightMask, newChunk.blockLightMask, newChunk.emptySkyLightMask, newChunk.emptyBlockLightMask)
+            } catch (err) {
+              const error = new Error(`Error processing chunk ${oldChunk.x}, ${oldChunk.z}: ${err.message}`)
+              error.stack = err.stack
+              throw error
+            }
+          }
         })
       }
     })
