@@ -41,7 +41,6 @@
     "prismarine-block": "^1.17.1",
     "prismarine-chunk": "github:zardoy/prismarine-chunk",
     "prismarine-nbt": "^2.5.0",
-    "prismarine-world": "^3.6.3",
     "uint4": "^0.1.2",
     "vec3": "^0.1.6"
   }
