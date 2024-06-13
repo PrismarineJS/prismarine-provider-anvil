@@ -1,4 +1,3 @@
-const nbt = require('prismarine-nbt')
 const RegionFile = require('./region')
 module.exports = (mcVersion) => {
   const { nbtChunkToPrismarineChunk, prismarineChunkToNbt } = require('./chunk')(mcVersion)
@@ -32,8 +31,7 @@ module.exports = (mcVersion) => {
     async load (x, z) {
       const data = await this.loadRaw(x, z)
       if (data == null) { return null }
-      const chunk = nbtChunkToPrismarineChunk(data)
-      return chunk
+      return nbtChunkToPrismarineChunk(data)
     }
 
     async loadRaw (x, z) {
