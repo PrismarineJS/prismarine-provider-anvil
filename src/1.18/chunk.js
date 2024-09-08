@@ -113,7 +113,10 @@ module.exports = (ChunkColumn, registry) => {
   }
 
   function fromNBT (tag) {
-    const data = nbt.simplify(tag)
+    let data = nbt.simplify(tag)
+    if (data.Level) {
+      data = data.Level
+    }
     const column = new ChunkColumn({ minY: -64, worldHeight: 384 })
     assert(data.Status === 'minecraft:full' || data.Status === 'full', 'Invalid chunk status, must be full: ' + data.Status)
 
