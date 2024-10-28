@@ -3,4 +3,6 @@ dist/
 distTest/
 world/testRegion/*
 package-lock.json
-test/fixtures/*
+test/world/
+.idea/
+.DS_Store

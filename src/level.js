@@ -1,3 +1,4 @@
+// @ts-check
 const nbt = require('prismarine-nbt')
 const { promisify } = require('util')
 const fs = require('fs').promises
@@ -19,7 +20,7 @@ async function readLevel (path) {
   return nbt.simplify(dnbt).Data
 }
 
-async function writeLevel (path, value) {
+async function writeLevel (/** @type {string} */path, /** @type {import('./level').LevelDatWrite} */value) {
   const nbt = {
     type: 'compound',
     name: '',
@@ -33,13 +34,13 @@ async function writeLevel (path, value) {
             value: {
               Name: {
                 type: 'string',
-                value: value.Version.Name
+                value: value.Version?.Name
               }
             }
           },
           LevelName: {
             type: 'string',
-            value: 'prismarine-world'
+            value: value.LevelName ?? 'prismarine-world'
           },
           generatorName: {
             type: 'string',
@@ -52,11 +53,16 @@ async function writeLevel (path, value) {
           RandomSeed: {
             type: 'long',
             value: value.RandomSeed
+          },
+          allowCommands: {
+            type: 'byte',
+            value: (value.allowCommands ?? true) ? 1 : 0
           }
         }
       }
     }
   }
+  // @ts-ignore
   const data = await writeAsync(nbt)
   await fs.writeFile(path, data)
 }
