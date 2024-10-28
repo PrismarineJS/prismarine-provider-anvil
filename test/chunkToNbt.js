@@ -3,8 +3,9 @@
 const { Vec3 } = require('vec3')
 const assert = require('assert')
 const nbt = require('prismarine-nbt')
+const prismarineProviderAnvil = require('prismarine-provider-anvil')
 
-const testedVersions = ['1.8', '1.13', '1.14', '1.16', '1.17']
+const testedVersions = prismarineProviderAnvil.testedVersions
 
 for (const version of testedVersions) {
   const registry = require('prismarine-registry')(version)
@@ -21,8 +22,8 @@ for (const version of testedVersions) {
     }
   }
 
-  const prismarineChunkToNbt = require('../').chunk(version).prismarineChunkToNbt
-  const nbtChunkToPrismarineChunk = require('../').chunk(version).nbtChunkToPrismarineChunk
+  const prismarineChunkToNbt = prismarineProviderAnvil.chunk(version).prismarineChunkToNbt
+  const nbtChunkToPrismarineChunk = prismarineProviderAnvil.chunk(version).nbtChunkToPrismarineChunk
 
   describe('transform chunk to nbt ' + version, function () {
     const tag = prismarineChunkToNbt(chunk, 4, 2)
@@ -41,7 +42,6 @@ for (const version of testedVersions) {
     })
 
     it('can write biomes', function () {
-      console.log(registry.version)
       if (registry.version['>=']('1.18')) {
         // Just check for a valid palette as the other test also checks biomes (which are now in individual 3D sections versus 2D)
         assert(nbt.simplify(tag).sections[0].biomes.palette.length > 0, 'No biomes were found')

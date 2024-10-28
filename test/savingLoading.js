@@ -6,8 +6,9 @@ const flatMap = require('flatmap')
 const range = require('range').range
 const { Vec3 } = require('vec3')
 const assert = require('assert')
+const prismarineProviderAnvil = require('prismarine-provider-anvil')
 
-const testedVersions = ['1.8', '1.13', '1.14', '1.16', '1.17', '1.18']
+const testedVersions = prismarineProviderAnvil.testedVersions
 
 for (const version of testedVersions) {
   const Chunk = require('prismarine-chunk')(version)
