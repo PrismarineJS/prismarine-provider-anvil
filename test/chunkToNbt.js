@@ -4,11 +4,9 @@ const { Vec3 } = require('vec3')
 const assert = require('assert')
 const nbt = require('prismarine-nbt')
 
-const todoVersions = ['1.9', '1.10', '1.11', '1.12', '1.15']
-const testedVersions = require('../').supportedVersions
+const testedVersions = ['1.8', '1.13', '1.14', '1.16', '1.17', '1.18', '1.19', '1.20.4']
 
 for (const version of testedVersions) {
-  if (todoVersions.includes(version)) continue
   const registry = require('prismarine-registry')(version)
   const Chunk = require('prismarine-chunk')(registry)
   const chunk = new Chunk()
@@ -67,9 +65,7 @@ for (const version of testedVersions) {
       const reChunk = nbtChunkToPrismarineChunk(tag)
       assert.strictEqual(reChunk.getBlockType(new Vec3(0, 50, 0)), 2, 'wrong block type at 0,50,0')
       assert.strictEqual(reChunk.getSkyLight(new Vec3(0, 50, 0)), 15)
-      if (!reChunk.dump().equals(chunk.dump())) {
-        console.warn('Warning: chunk dump does not match original chunk dump')
-      }
+      assert(reChunk.dump().equals(chunk.dump()))
     })
   })
 }

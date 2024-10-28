@@ -28,15 +28,12 @@ module.exports = (ChunkColumn, registry) => {
 
         const biomePalette = biomeSection.data.palette ? biomeSection.data.palette : [biomeSection.data.value] // "SingleValue" palette mess
 
-        let bitsPerBlock = Math.ceil(Math.log2(blockPalette.length))
+        const bitsPerBlock = Math.ceil(Math.log2(blockPalette.length))
         const bitsPerBiome = Math.ceil(Math.log2(biomePalette.length))
 
         if (!bitsPerBlock) {
           blockStates = nbt.comp({ palette: nbt.list(nbt.comp(blockPalette)) })
         } else {
-          if (bitsPerBlock === 1 || bitsPerBlock === 2 || bitsPerBlock === 3) {
-            bitsPerBlock = 4
-          }
           assert.strictEqual(bitsPerBlock, section.data.data.bitsPerValue, `Computed bits per block for palette size of ${blockPalette.length} (${bitsPerBlock}) does not match bits per block in section, ${section.data.data.bitsPerValue}`)
 
           const data = section.data.data.toLongArray()
@@ -126,7 +123,6 @@ module.exports = (ChunkColumn, registry) => {
     column.inhabitedTime = data.InhabitedTime.valueOf()
 
     for (const section of data.sections) {
-      if (!section.block_states) continue
       let bitsPerBlock = Math.ceil(Math.log2(section.block_states.palette.length))
       const bitsPerBiome = Math.ceil(Math.log2(section.biomes.palette.length))
 

@@ -7,11 +7,9 @@ const range = require('range').range
 const { Vec3 } = require('vec3')
 const assert = require('assert')
 
-const todoVersions = ['1.9', '1.10', '1.11', '1.12']
-const testedVersions = require('../').supportedVersions
+const testedVersions = ['1.8', '1.13', '1.14', '1.16', '1.17', '1.18', '1.19', '1.20']
 
 for (const version of testedVersions) {
-  if (todoVersions.includes(version)) continue
   const Chunk = require('prismarine-chunk')(version)
   const mcData = require('minecraft-data')(version)
   const Anvil = require('../').Anvil(version)
