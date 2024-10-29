@@ -110,8 +110,6 @@ module.exports = (ChunkColumn, registry) => {
   function fromNBT (tag) {
     const data = nbt.simplify(tag)
     const column = new ChunkColumn({ minY: -64, worldHeight: 384 })
-    // assert(data.Status === 'full', 'Chunk is not full')
-
     column.x = data.xPos
     column.z = data.zPos
     column.lastUpdate = data.LastUpdate.valueOf()
