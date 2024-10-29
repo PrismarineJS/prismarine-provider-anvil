@@ -4,12 +4,17 @@ const { Vec3 } = require('vec3')
 const assert = require('assert')
 const nbt = require('prismarine-nbt')
 const prismarineProviderAnvil = require('prismarine-provider-anvil')
+const compareChunks = require('./common').compareChunks
 
 const testedVersions = prismarineProviderAnvil.testedVersions
 
 for (const version of testedVersions) {
   const registry = require('prismarine-registry')(version)
   const Chunk = require('prismarine-chunk')(registry)
+  const chunkOptions = {
+    minY: registry.supportFeature('tallWorld') ? -64 : 0,
+    worldHeight: registry.supportFeature('tallWorld') ? 384 : 256
+  }
   const chunk = new Chunk()
 
   for (let x = 0; x < 16; x++) {
@@ -66,7 +71,7 @@ for (const version of testedVersions) {
       const reChunk = nbtChunkToPrismarineChunk(tag)
       assert.strictEqual(reChunk.getBlockType(new Vec3(0, 50, 0)), 2, 'wrong block type at 0,50,0')
       assert.strictEqual(reChunk.getSkyLight(new Vec3(0, 50, 0)), 15)
-      assert(reChunk.dump().equals(chunk.dump()))
+      compareChunks(chunk, reChunk, chunkOptions)
     })
   })
 }
