@@ -53,6 +53,12 @@ Writes a level.dat file
 
 ## History
 
+### 2.9.0
+* [Support 1.18.2, 1.19.4, 1.20.6, 1.21.1 (#81)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/19bb778da80bb600cac9ee9d9f47f1d477e9b0cd) (thanks @rom1504)
+* [Fix test versions. (#80)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/6b0517ef64623d031b6dfbcd422bf0149d9cacc0) (thanks @rom1504)
+* [Default to biome minecraft:void (#76)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/dc32ad7326a815ab7f110f52d07df20f5b68527a) (thanks @AnotherPillow)
+* [Handle optional palette in 1.14 chunk.js (#74)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/844445b0bb4cd83a5047c3afd419a211b0805cbc) (thanks @rom1504)
+
 ### 2.8.0
 * [require lazily (#70)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/257f7fd2d995a54fe7e275909b264be106b95063) (thanks @zardoy)
 * [Make created level.dat loadable in singleplayer (#71)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/2638bec1e8bca925e87a8a6a6b945417724fc4a1) (thanks @zardoy)
