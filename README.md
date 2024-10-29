@@ -8,6 +8,12 @@ Anvil Storage Provider implementation. Support minecraft pc 1.8, 1.9, 1.10, 1.11
 
 See [examples](examples)
 
+## Test
+
+Run single test with `npm run mochaTest -- -g "saving and loading works 1.8.9 in sequence"`
+
+All tests with `npm test`
+
 ## API
 
 ### Anvil
