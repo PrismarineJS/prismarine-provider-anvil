@@ -7,6 +7,7 @@ const range = require('range').range
 const { Vec3 } = require('vec3')
 const assert = require('assert')
 const prismarineProviderAnvil = require('prismarine-provider-anvil')
+const compareChunks = require('./common').compareChunks
 
 const testedVersions = prismarineProviderAnvil.testedVersions
 
@@ -49,48 +50,6 @@ for (const version of testedVersions) {
       chunks = generateCube(size).map(({ chunkX, chunkZ }) => ({ chunkX, chunkZ, chunk: generateRandomChunk(chunkX, chunkZ) }))
     })
 
-    function compareChunks (chunk, chunk2) {
-      function eqSet (as, bs) {
-        if (as.size !== bs.size) return false
-        for (const a of as) if (!bs.has(a)) return false
-        return true
-      }
-
-      if (chunk.sections) {
-        assert.strictEqual(chunk.sections.length, chunk2.sections.length)
-        for (let i = 0; i < chunk.sections.length; i++) {
-          if (chunk.sections[i] !== null && chunk2.sections[i].palette !== undefined) {
-            const s1 = new Set(chunk.sections[i].palette)
-            const s2 = new Set(chunk2.sections[i].palette)
-            assert(eqSet(s1, s2), `palettes are not equal ${[...s1]} != ${[...s2]}`)
-          }
-        }
-      }
-
-      const p = new Vec3(0, chunkOptions.minY, 0)
-      const maxHeight = chunkOptions.worldHeight + chunkOptions.minY
-      for (p.y = chunkOptions.minY; p.y < maxHeight; p.y++) {
-        for (p.z = 0; p.z < 16; p.z++) {
-          for (p.x = 0; p.x < 16; p.x++) {
-            const b = chunk.getBlock(p)
-            const b2 = chunk2.getBlock(p)
-            assert.notStrictEqual(
-              b.name,
-              '',
-              ' block state: ' +
-                  b.stateId +
-                  ' type: ' +
-                  b.type +
-                  " read, which doesn't exist"
-            )
-            assert.strictEqual(JSON.stringify(b), JSON.stringify(b2), 'blocks at ' + p +
-            ' differ, first block is ' + JSON.stringify(b, null, 2) +
-            ' second block is ' + JSON.stringify(b2, null, 2))
-          }
-        }
-      }
-    }
-
     async function loadInParallel () {
       const anvil = new Anvil(regionPath)
       await Promise.all(
@@ -102,7 +61,7 @@ for (const version of testedVersions) {
             const blockB = loadedChunk.getBlock(new Vec3(0, 50, 0))
             assert.strictEqual(
               blockA.stateId, blockB.stateId, 'wrong block type at 0,50,0 at chunk ' + chunkX + ', ' + chunkZ)
-            compareChunks(originalChunk, loadedChunk)
+            compareChunks(originalChunk, loadedChunk, chunkOptions)
           })
       )
       await anvil.close()

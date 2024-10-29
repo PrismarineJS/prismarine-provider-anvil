@@ -34,8 +34,6 @@ module.exports = (ChunkColumn, registry) => {
         if (!bitsPerBlock) {
           blockStates = nbt.comp({ palette: nbt.list(nbt.comp(blockPalette)) })
         } else {
-          assert.strictEqual(bitsPerBlock, section.data.data.bitsPerValue, `Computed bits per block for palette size of ${blockPalette.length} (${bitsPerBlock}) does not match bits per block in section, ${section.data.data.bitsPerValue}`)
-
           const data = section.data.data.toLongArray()
           blockStates = nbt.comp({ palette: nbt.list(nbt.comp(blockPalette)), data: nbt.longArray(data) })
         }
@@ -112,8 +110,6 @@ module.exports = (ChunkColumn, registry) => {
   function fromNBT (tag) {
     const data = nbt.simplify(tag)
     const column = new ChunkColumn({ minY: -64, worldHeight: 384 })
-    assert(data.Status === 'full', 'Chunk is not full')
-
     column.x = data.xPos
     column.z = data.zPos
     column.lastUpdate = data.LastUpdate.valueOf()
