@@ -55,7 +55,11 @@ module.exports = (mcVersion, worldVersion, noSpan) => {
     }
 
     function readSections (chunk, sections) {
-      sections.forEach(section => readSection(chunk, section))
+      for (const section of sections) {
+        if (section.Palette) {
+          readSection(chunk, section)
+        }
+      }
     }
 
     function writeSections (chunk) {
