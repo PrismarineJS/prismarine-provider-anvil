@@ -53,6 +53,11 @@ Writes a level.dat file
 
 ## History
 
+### 2.10.0
+* [Quick fix for pc1.17 masks (#85)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/790db07d75d919f52056772c0998164b6587cd51) (thanks @extremeheat)
+* [Bump mocha from 10.8.2 to 11.0.1 (#83)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/25da171b17f69e4252764931f8adba88b93f5a18) (thanks @dependabot[bot])
+* [pc1.14-1.17: Don't read empty sections (#84)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/8ef34214f1221ac3e997ce2404634d3ae0c944c4) (thanks @extremeheat)
+
 ### 2.9.0
 * [Support 1.18.2, 1.19.4, 1.20.6, 1.21.1 (#81)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/19bb778da80bb600cac9ee9d9f47f1d477e9b0cd) (thanks @rom1504)
 * [Fix test versions. (#80)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/6b0517ef64623d031b6dfbcd422bf0149d9cacc0) (thanks @rom1504)
