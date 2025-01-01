@@ -53,6 +53,9 @@ Writes a level.dat file
 
 ## History
 
+### 2.11.0
+* [Update npm-publish.yml](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/9bf7e1f80a679caf3b25f5cdcaa3a58e7ddb4404) (thanks @rom1504)
+
 ### 2.10.0
 * [Quick fix for pc1.17 masks (#85)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/790db07d75d919f52056772c0998164b6587cd51) (thanks @extremeheat)
 * [Bump mocha from 10.8.2 to 11.0.1 (#83)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/25da171b17f69e4252764931f8adba88b93f5a18) (thanks @dependabot[bot])
