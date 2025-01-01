@@ -6,6 +6,7 @@ module.exports = (mcVersion, worldVersion, noSpan) => {
   const ChunkSection = require('prismarine-chunk')(mcVersion).section
 
   return (Chunk, mcData) => {
+    const newFormat = mcData.supportFeature('newLightingDataFormat') // 1.17+
     function nbtChunkToPrismarineChunk (data) {
       const nbtd = nbt.simplify(data)
       const chunk = new Chunk()
@@ -112,6 +113,17 @@ module.exports = (mcVersion, worldVersion, noSpan) => {
           capacity: 4096
         })
         readByteArray(chunk.skyLightSections[section.Y + 1], section.SkyLight)
+      }
+
+      if (newFormat) {
+        chunk.blockLightMask = new BitArray({ bitsPerValue: 1, capacity: 16 })
+        chunk.skyLightMask = new BitArray({ bitsPerValue: 1, capacity: 16 })
+        chunk.sectionMask = new BitArray({ bitsPerValue: 1, capacity: 16 })
+        for (let i = 0; i < 16; i++) {
+          if (chunk.sections[i]) chunk.sectionMask.set(i, true)
+          if (chunk.blockLightSections[i]) chunk.blockLightMask.set(i, true)
+          if (chunk.skyLightSections[i]) chunk.skyLightMask.set(i, true)
+        }
       }
     }
 
