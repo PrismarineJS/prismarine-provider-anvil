@@ -8,14 +8,19 @@ const testedVersions = prismarineProviderAnvil.testedVersions
 describe('can get chunks from region files', function () {
   this.timeout(5 * 1000)
   for (const version of testedVersions) {
-    it(`works for ${version}`, async () => {
+    describe(`open regions ${version}`, async () => {
       const Anvil = prismarineProviderAnvil.Anvil(version)
       const filePath = path.join(fixtures, version)
       const anvil = new Anvil(filePath)
-      const [, xStr, zStr] = fs.readdirSync(filePath)[0].match(/r\.(-?\d+)\.(-?\d+)\.mca/)
-      const [x, z] = [+xStr, zStr]
-      const chunks = await anvil.getAllChunksInRegion(x, z)
-      assert(chunks.length > 0)
+      const regions = fs.readdirSync(filePath).filter(f => f.match(/r\.(-?\d+)\.(-?\d+)\.mca/))
+      for (const region of regions) {
+        const [, xStr, zStr] = region.match(/r\.(-?\d+)\.(-?\d+)\.mca/)
+        const [x, z] = [+xStr, zStr]
+        it('open region ' + region, async () => {
+          const chunks = (await anvil.getAllChunksInRegion(x, z)).filter(x => x)
+          assert(chunks.length > 0)
+        })
+      }
     })
   }
 })
