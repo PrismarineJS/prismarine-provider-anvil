@@ -53,6 +53,13 @@ Writes a level.dat file
 
 ## History
 
+### 2.12.0
+* [Update CI to Node 24 (#95)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/8d880ae3dc09dcc21d5079ef2ea5043a8539f61c) (thanks @rom1504)
+* [Fix publish condition for npm-publish v4 (#94)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/35292f5f61b5f77f02a36b77bec1fbeab63f32d9) (thanks @rom1504)
+* [Switch to trusted publishing via OIDC (#93)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/0202210ed234a3d7efabb3698f90dcbfb72ac468) (thanks @rom1504)
+* [node 22 (#91)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/cfc8ef4c6aa95fb3303fee80d32639023be110b8) (thanks @rom1504)
+* [Test all region files instead of only first one (#88)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/55fda80b6360aaef6056ab8b54caed0d14ac4096) (thanks @zardoy)
+
 ### 2.11.0
 * [Update npm-publish.yml](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/9bf7e1f80a679caf3b25f5cdcaa3a58e7ddb4404) (thanks @rom1504)
 
