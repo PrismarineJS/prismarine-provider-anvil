@@ -1,11 +1,11 @@
-const { promisify } = require('util')
 const fs = require('fs').promises
 const nbt = require('prismarine-nbt')
 const zlib = require('zlib')
 
-const deflateAsync = promisify(zlib.deflate)
-const gunzipAsync = promisify(zlib.gunzip)
-const inflateAsync = promisify(zlib.inflate)
+// Use sync zlib to avoid uncaught async errors on Node 24
+const deflateAsync = (data) => Promise.resolve(zlib.deflateSync(data))
+const gunzipAsync = (data) => Promise.resolve(zlib.gunzipSync(data))
+const inflateAsync = (data) => Promise.resolve(zlib.inflateSync(data))
 
 function createFilledBuffer (size, value) {
   const b = Buffer.alloc(size)
