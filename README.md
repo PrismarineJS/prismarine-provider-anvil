@@ -53,6 +53,9 @@ Writes a level.dat file
 
 ## History
 
+### 2.13.0
+* [Use sync zlib to avoid uncaught async errors (#98)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/3820535cd1778bf0a451dd78c0fe3626dbd89cfb) (thanks @rom1504)
+
 ### 2.12.0
 * [Update CI to Node 24 (#95)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/8d880ae3dc09dcc21d5079ef2ea5043a8539f61c) (thanks @rom1504)
 * [Fix publish condition for npm-publish v4 (#94)](https://github.com/PrismarineJS/prismarine-provider-anvil/commit/35292f5f61b5f77f02a36b77bec1fbeab63f32d9) (thanks @rom1504)
