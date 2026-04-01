@@ -1,8 +1,9 @@
+const { promisify } = require('util')
 const fs = require('fs').promises
 const nbt = require('prismarine-nbt')
 const zlib = require('zlib')
 
-// Use sync zlib to avoid uncaught async errors on Node 24
+// Sync zlib to avoid uncaught async errors. See nodejs/node#62325
 const deflateAsync = (data) => Promise.resolve(zlib.deflateSync(data))
 const gunzipAsync = (data) => Promise.resolve(zlib.gunzipSync(data))
 const inflateAsync = (data) => Promise.resolve(zlib.inflateSync(data))
