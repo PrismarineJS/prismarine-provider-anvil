@@ -5,7 +5,7 @@ const zlib = require('zlib')
 
 function write (nbtData, cb) {
   const data = nbt.writeUncompressed(nbtData)
-  try { cb(null, zlib.gzipSync(data)) } catch(e) { cb(e) }
+  try { cb(null, zlib.gzipSync(data)) } catch (e) { cb(e) }
 }
 
 const parseAsync = promisify(nbt.parse)
