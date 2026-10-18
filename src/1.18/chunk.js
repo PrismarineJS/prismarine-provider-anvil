@@ -1,11 +1,21 @@
 const assert = require('assert')
 const nbt = require('prismarine-nbt')
 
-module.exports = (ChunkColumn, registry) => {
+module.exports = (ChunkColumn, registry, blockPaletteFormat) => {
   const Block = require('prismarine-block')(registry)
   const dataVersion = registry.version.dataVersion
   // turns a JS object into an NBT compound, with the values as nbt.string's
   const objPropsToNbt = props => Object.fromEntries(Object.entries(props).map(([k, v]) => [k, nbt.string(String(v))]))
+  // 26.3 stores block palettes differently and passes its own format, see ../26.3/chunk.js
+  const { writeBlockPalette, readBlockPalette } = blockPaletteFormat ?? {
+    writeBlockPalette: stateIds => nbt.list(nbt.comp(stateIds.map(id => Block.fromStateId(id))
+      .map(block => ({
+        Name: nbt.string('minecraft:' + block.name),
+        Properties: nbt.comp(objPropsToNbt(block.getProperties()))
+      })))),
+    // to the { Name, Properties } entries that ChunkColumn.loadSection reads
+    readBlockPalette: palette => palette
+  }
 
   function writeSections (column) {
     const sections = []
@@ -20,22 +30,18 @@ module.exports = (ChunkColumn, registry) => {
       if (section) {
         section.palette = section.palette === undefined ? [section.data.value] : section.palette
         let blockStates, biomes, blockLight, skyLight
-        const blockPalette = section.palette.map(id => Block.fromStateId(id))
-          .map(block => ({
-            Name: nbt.string('minecraft:' + block.name),
-            Properties: nbt.comp(objPropsToNbt(block.getProperties()))
-          }))
+        const blockPalette = writeBlockPalette(section.palette)
 
         const biomePalette = biomeSection.data.palette ? biomeSection.data.palette : [biomeSection.data.value] // "SingleValue" palette mess
 
-        const bitsPerBlock = Math.ceil(Math.log2(blockPalette.length))
+        const bitsPerBlock = Math.ceil(Math.log2(section.palette.length))
         const bitsPerBiome = Math.ceil(Math.log2(biomePalette.length))
 
         if (!bitsPerBlock) {
-          blockStates = nbt.comp({ palette: nbt.list(nbt.comp(blockPalette)) })
+          blockStates = nbt.comp({ palette: blockPalette })
         } else {
           const data = section.data.data.toLongArray()
-          blockStates = nbt.comp({ palette: nbt.list(nbt.comp(blockPalette)), data: nbt.longArray(data) })
+          blockStates = nbt.comp({ palette: blockPalette, data: nbt.longArray(data) })
         }
 
         const biomeNamesPalette = biomePalette.map(biomeId => 'minecraft:' + registry.biomes[biomeId]?.name ?? 'void')
@@ -116,14 +122,15 @@ module.exports = (ChunkColumn, registry) => {
     column.inhabitedTime = data.InhabitedTime.valueOf()
 
     for (const section of data.sections) {
-      let bitsPerBlock = Math.ceil(Math.log2(section.block_states.palette.length))
+      const blockPalette = readBlockPalette(section.block_states.palette)
+      let bitsPerBlock = Math.ceil(Math.log2(blockPalette.length))
       const bitsPerBiome = Math.ceil(Math.log2(section.biomes.palette.length))
 
       if (bitsPerBlock === 1 || bitsPerBlock === 2 || bitsPerBlock === 3) {
         bitsPerBlock = 4
       }
 
-      column.loadSection(section.Y, { ...section.block_states, bitsPerBlock }, { ...section.biomes, bitsPerBiome }, section.BlockLight, section.SkyLight)
+      column.loadSection(section.Y, { ...section.block_states, palette: blockPalette, bitsPerBlock }, { ...section.biomes, bitsPerBiome }, section.BlockLight, section.SkyLight)
     }
 
     if (data.block_entities.length) {
