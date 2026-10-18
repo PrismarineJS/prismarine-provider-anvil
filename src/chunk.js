@@ -19,7 +19,9 @@ module.exports = (registryOrVersion) => {
     1.19: () => require('./1.18/chunk'),
     '1.20': () => require('./1.18/chunk'),
     1.21: () => require('./1.18/chunk'),
-    26.1: () => require('./1.18/chunk')
+    26.1: () => require('./1.18/chunk'),
+    26.2: () => require('./1.18/chunk'),
+    26.3: () => require('./26.3/chunk')
   }
 
   const loadVersion = registry.version.majorVersion
