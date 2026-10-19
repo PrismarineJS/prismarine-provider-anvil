@@ -31,7 +31,7 @@
   "devDependencies": {
     "buffer-equal": "^1.0.0",
     "flatmap": "0.0.3",
-    "minecraft-data": "^3.0.0",
+    "minecraft-data": "^3.105.0",
     "mocha": "^11.0.1",
     "prismarine-provider-anvil": "file:.",
     "prismarine-registry": "^1.1.0",
