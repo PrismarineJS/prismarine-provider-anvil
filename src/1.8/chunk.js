@@ -192,7 +192,7 @@ module.exports = (Chunk, mcData) => {
       for (let x = 0; x < 16; x++) { biomes.push(chunk.getBiome(new Vec3(x, 0, z))) }
     }
     return {
-      value: biomes,
+      value: toSignedArray(Buffer.from(biomes)),
       type: 'byteArray'
     }
   }
